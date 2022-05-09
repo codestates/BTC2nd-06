@@ -16,11 +16,11 @@ web3 = Web3(Web3.HTTPProvider(RPC_URL_HTTP))
 web3.middleware_onion.inject(geth_poa_middleware, layer=0)  # middleware for PoA-based TestNet connection.
 
 
-def _select_data_type(obj, data_type='hexbytes'):
-    if data_type in ['hex', 'hexbytes']:
+def _select_data_format(obj, data_format='hexbytes'):
+    if data_format in ['hex', 'hexbytes']:
         return obj
 
-    elif data_type in ['str', 'string']:
+    elif data_format in ['str', 'string']:
         if isinstance(obj, dict):
             return convert_dict_json_serializable(obj)
         elif isinstance(obj, list):
@@ -78,33 +78,33 @@ def get_latest_block_number():
     return web3.eth.get_block_number()
 
 
-def get_block_header(block_identifier, data_type='hexbytes'):
+def get_block_header(block_identifier, data_format='hexbytes'):
     block = dict(web3.eth.get_block(block_identifier))
     block_header = _dict_without_keys(block, ['transactions'])
 
-    return _select_data_type(block_header, data_type)
+    return _select_data_format(block_header, data_format)
 
 
-def get_transactions_from_block(block_identifier, data_type='hexbytes'):
+def get_transactions_from_block(block_identifier, data_format='hexbytes'):
     block = dict(web3.eth.get_block(block_identifier))
     transactions = block['transactions']
 
-    return _select_data_type(transactions, data_type)
+    return _select_data_format(transactions, data_format)
 
 
-def get_block(block_identifier, data_type='hexbytes'):  # block header + transactions
+def get_block(block_identifier, data_format='hexbytes'):  # block header + transactions
     block = dict(web3.eth.get_block(block_identifier))
 
-    return _select_data_type(block, data_type)
+    return _select_data_format(block, data_format)
 
 
-def get_transaction(trx_hash, data_type='hexbytes'):
+def get_transaction(trx_hash, data_format='hexbytes'):
     transaction = dict(web3.eth.get_transaction(trx_hash))
 
-    return _select_data_type(transaction, data_type)
+    return _select_data_format(transaction, data_format)
 
 
-def get_transaction_receipt(trx_hash, data_type='hexbytes'):
+def get_transaction_receipt(trx_hash, data_format='hexbytes'):
     receipt = dict(web3.eth.get_transaction_receipt(trx_hash))
 
-    return _select_data_type(receipt, data_type)
+    return _select_data_format(receipt, data_format)

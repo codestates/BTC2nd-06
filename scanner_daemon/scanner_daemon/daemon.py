@@ -10,23 +10,22 @@ def simple_scanner_daemon(account_address):  # CA or EOA address
 
     trx_list = get_transactions_from_block(latest_block_number, data_type='str')
 
-    print(trx_list)
-    # for trx in trx_list:
-    #     trx_data = web3.eth.get_transaction(trx)
-    #
-    #     trx_from = trx_data['from']
-    #     trx_to = trx_data['to']
-    #
-    #     # if account_address == trx_from:
-    #     #     print('DONE')
-    #     #     break
-    #     # elif account_address == trx_to:
-    #     #     print('DONE')
-    #     #     break
-    #
-    #     print(f'transaction: {trx_from} => {trx_to}')  # type: 'str'
-    #     print({type(trx_to)})
-    #     print('\n')
+    for trx in trx_list:
+        trx_data = web3.eth.get_transaction(trx)
+
+        trx_from = trx_data['from']
+        trx_to = trx_data['to']
+
+        # if account_address == trx_from:
+        #     print('DONE')
+        #     break
+        # elif account_address == trx_to:
+        #     print('DONE')
+        #     break
+
+        print(f'transaction: {trx_from} => {trx_to}')  # type: 'str'
+        print({type(trx_to)})
+        print('\n')
 
 
 def transaction_confirm_scanner():
