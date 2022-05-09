@@ -19,7 +19,7 @@ class Transaction(models.Model):
     block_hash = models.CharField(default='0x'+'0'*64, max_length=66, validators=[MinLengthValidator(66)])
     block_number = models.IntegerField(default=0)
 
-    # TODO DerivedAddress에 연결 검토
+    # TODO DerivedWallet에 연결 검토
     related_sender = models.ForeignKey(MasterWallet, on_delete=models.CASCADE, related_name='sender')
     related_recipient = models.ForeignKey(MasterWallet, on_delete=models.CASCADE, related_name='recipient')
 

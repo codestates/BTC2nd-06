@@ -5,7 +5,7 @@ import uuid
 from django.db import models
 
 
-class DerivedAddress(models.Model):
+class DerivedWallet(models.Model):
     """
     HD Wallet based on BIP-44
     """

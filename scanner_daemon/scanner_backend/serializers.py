@@ -28,3 +28,10 @@ class MasterWalletSerializer(serializers.ModelSerializer):
     class Meta:
         model = MasterWallet
         fields = '__all__'
+
+
+class DerivedWalletSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = DerivedWallet
+        fields = '__all__'
