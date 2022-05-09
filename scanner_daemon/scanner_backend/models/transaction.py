@@ -29,9 +29,6 @@ class Transaction(models.Model):
     sender_address = models.CharField(max_length=42, validators=[MinLengthValidator(42)], blank=True, null=True)  # Hash Address
     recipient_address = models.CharField(max_length=42, validators=[MinLengthValidator(42)], blank=True, null=True)
 
-    block_hash = models.CharField(default='0x'+'0'*64, max_length=66, validators=[MinLengthValidator(66)])
-    block_number = models.IntegerField(default=0)
-
     transaction_payload = models.TextField()  # JSON format string
 
     def __str__(self):
