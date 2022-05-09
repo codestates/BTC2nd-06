@@ -11,7 +11,7 @@ RPC_URL_HTTP = Meta.RPC_URL_HTTP
 # TRANSACTION_ID = Meta.TRANSACTION_ID
 # BLOCK_HASH = Meta.BLOCK_HASH
 
-# web3 provider (infura.io)
+# web3 provider (Binance Smart Chain)
 web3 = Web3(Web3.HTTPProvider(RPC_URL_HTTP))
 web3.middleware_onion.inject(geth_poa_middleware, layer=0)  # middleware for PoA-based TestNet connection.
 
@@ -21,7 +21,10 @@ def _select_data_type(obj, data_type='hexbytes'):
         return obj
 
     elif data_type in ['str', 'string']:
-        return convert_dict_json_serializable(obj)
+        if isinstance(obj, dict):
+            return convert_dict_json_serializable(obj)
+        elif isinstance(obj, list):
+            return convert_list_json_serializable(obj)
 
 
 def _dict_without_keys(dictionary, keys):
@@ -51,6 +54,12 @@ def convert_dict_json_serializable(dictionary):
     return dictionary
 
 
+def convert_list_json_serializable(list_obj):
+    for index, value in enumerate(list_obj):
+        list_obj[index] = _convert_data_json_serializable(value)
+    return list_obj
+
+
 def pretty_print_dict(obj):
     """
     특정 딕셔너리 내의 모든 HexBytes/Bytes 데이터를 recursive하게 string으로 변환
@@ -78,8 +87,9 @@ def get_block_header(block_identifier, data_type='hexbytes'):
 
 def get_transactions_from_block(block_identifier, data_type='hexbytes'):
     block = dict(web3.eth.get_block(block_identifier))
+    transactions = block['transactions']
 
-    return _select_data_type(block, data_type)
+    return _select_data_type(transactions, data_type)
 
 
 def get_block(block_identifier, data_type='hexbytes'):  # block header + transactions
