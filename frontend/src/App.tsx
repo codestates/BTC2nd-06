@@ -1,15 +1,16 @@
-import React, { FC } from "react";
+import React from "react";
+import { HashRouter, Routes, Route } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./routes/home";
-const App: FC = () => {
+import Home from "./pages/home";
+
+function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path="/" element={<Home />}></Route>
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   );
-};
+}
 
 export default App;
