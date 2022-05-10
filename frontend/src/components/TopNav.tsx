@@ -11,35 +11,9 @@ function TopNav() {
 }
 
 const HeaderContainer = styled.div`
-  z-index: 100;
-  position: fixed;
-  display: flex;
-  width: 37.5rem;
-  height: 4.4rem;
-  align-items: center;
-  justify-content: space-between;
-  top: 0;
-  margin: auto 0;
-  padding: 1.2rem;
-  margin: 0 -16px;
-  background-color: ${theme.colors.Yellow};
-  .header-back {
-    float: left;
-    width: 2.4rem;
-  }
-  .header-menu {
-    float: left;
-    width: 2.4rem;
-  }
-  .header-profile {
-    float: right;
-    width: 2.4rem;
-  }
-  .header-title {
-    font-size: 17px;
-    font-weight: 700;
-    color: ${({ theme }) => theme.colors.White};
-  }
+  width: 100%;
+  height: 3rem;
+  border: 1px solid;
 `;
 
 export default TopNav;
