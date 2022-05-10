@@ -15,9 +15,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from scanner_backend import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('dj_rest_auth.urls')),
     path('auth/registration/', include('dj_rest_auth.registration.urls')),
+
+    path('wallet/', views.MasterWalletCreateView.as_view()),
+    path('wallet/data/', views.MasterWalletRetrieveView.as_view()),
 ]
