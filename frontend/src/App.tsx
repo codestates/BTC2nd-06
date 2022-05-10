@@ -18,9 +18,9 @@ function App() {
   );
 }
 const PageWrapper = styled.div`
-  width: 35rem;
-  height: 75rem;
-  background-color: ${theme.colors.BattleshipGrey};
+  width: 375px;
+  height: 600px;
+  background-color: ${theme.colors.White};
 `;
 
 export default App;
