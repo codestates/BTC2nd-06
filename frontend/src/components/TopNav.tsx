@@ -12,8 +12,7 @@ function TopNav() {
 
 const HeaderContainer = styled.div`
   width: 100%;
-  height: 3rem;
-  border: 1px solid;
+  height: 5rem;
 `;
 
 export default TopNav;
