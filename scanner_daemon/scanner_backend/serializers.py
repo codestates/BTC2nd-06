@@ -1,6 +1,6 @@
 # 파이썬 표준 함수
 
-# 코어 장고
+# Django Core
 
 # 서드 파티 라이브러리
 from rest_framework import serializers

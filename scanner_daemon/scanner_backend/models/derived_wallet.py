@@ -13,7 +13,7 @@ class DerivedWallet(models.Model):
     master_wallet = models.ForeignKey('MasterWallet', on_delete=models.CASCADE, related_name='master_wallet')
 
     address = models.TextField(null=True, blank=True)
-    wallet_alias = models.CharField(max_length=30)  # 지갑 주소 이름
+    wallet_alias = models.CharField(max_length=30, blank=True, null=True)  # 지갑 주소 이름
 
     balance = models.FloatField(default=0)
 
