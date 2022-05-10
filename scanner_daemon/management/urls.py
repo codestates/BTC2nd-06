@@ -23,5 +23,7 @@ urlpatterns = [
     path('auth/registration/', include('dj_rest_auth.registration.urls')),
 
     path('wallet/', views.MasterWalletCreateView.as_view()),
-    path('wallet/data/', views.MasterWalletRetrieveView.as_view()),
+    path('wallet/master/', views.MasterWalletRetrieveView.as_view()),
+    path('wallet/derived/', views.MasterWalletRetrieveView.as_view()),
+
 ]

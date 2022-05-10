@@ -90,3 +90,22 @@ class DerivedWalletRetrieveView(APIView):
     """ DerivedWallet 정보 조회
     DerivedWallet의 잔고, address 목록, 연관 트랜잭션을 조회하는 뷰
     """
+
+    def get(self, request):
+        address = request.data['address']
+        try:
+            derived_wallet = DerivedWallet.objects.get(address=address)
+        except DerivedWallet.DoesNotExist:
+            raise Exception
+
+        trx_hash_list = []
+        transactions = derived_wallet.transaction_set
+        for transaction in transactions:
+            trx_hash_list.append(transaction.trx_hash)
+
+        # TODO 리턴 데이터 더 상세하게
+        data = {
+            'transaction_list': trx_hash_list
+        }
+
+        return Response(data)
