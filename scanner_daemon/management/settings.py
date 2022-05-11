@@ -20,6 +20,8 @@ SECRET_KEY = my_settings.SECRET_KEY
 DEBUG = my_settings.DEBUG
 
 ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
     ".ap-northeast-2.compute.amazonaws.com"
 ]
 
