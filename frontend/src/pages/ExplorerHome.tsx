@@ -9,57 +9,30 @@ import {
   ToggleButton,
 } from "react-bootstrap";
 import TopNav from "../components/TopNav";
-import web3 from "../contracts/index";
 import styled from "styled-components";
 import PageWrapper from "./page.styled";
 import theme from "../theme";
+import { BlockInfo, Transaction } from "../interfaces";
+import { useNavigate, Link } from "react-router-dom";
 
-interface Transaction {
-  blockHash: string;
-  blockNumber: number;
-  from: string;
-  gas: string;
-  gasPrice: string;
-  hash: string;
-  input: string;
-  nonce: number;
-  r: string;
-  s: string;
-  to: string;
-  transactionIndex: number;
-  type: string;
-  v: string;
-  value: string;
+interface ExplorerHomeProps {
+  latestTxList: Transaction[];
+  latestBlock: BlockInfo[];
 }
 
-function ExplorerHome() {
-  const [latestBlock, setlatesBlock] = useState({});
-  const [latestTxList, setlatestTxList] = useState<Transaction[]>([]);
+function ExplorerHome({ latestTxList, latestBlock }: ExplorerHomeProps) {
+  const [radioValue, setRadioValue] = useState("block");
+  let navigate = useNavigate();
 
-  const [radioValue, setRadioValue] = useState("1");
   const radios = [
-    { name: "Latest Blocks", value: "1" },
-    { name: "Latest Transactions", value: "2" },
+    { name: "Latest Blocks", value: "block" },
+    { name: "Latest Transactions", value: "tx" },
   ];
 
-  useEffect(() => {
-    getChainInfo();
-  }, []);
-
-  async function getChainInfo() {
-    const lastBlockNum = await web3.eth.getBlockNumber();
-    const LasBlockInfo = await web3.eth.getBlock(lastBlockNum, false);
-    const { transactions } = LasBlockInfo;
-    const latestTxList: Transaction[] = await Promise.all(
-      transactions.map(async (t: string) => {
-        const txList = await web3.eth.getBigGasLimitTransaction(t);
-        return { ...txList, value: web3.utils.fromWei(txList.value, "ether") };
-      })
-    );
-    console.log(latestTxList);
-    setlatestTxList(latestTxList.splice(0, 7));
+  useEffect(() => {}, []);
+  function handleClick(type: string, hx: string) {
+    navigate(`/explorer?type=${type}$hx=${hx}`);
   }
-
   return (
     <PageWrapper>
       <TopNav></TopNav>
@@ -91,28 +64,55 @@ function ExplorerHome() {
           </ToggleButton>
         ))}
       </ButtonGroup>
-
       <Col>
         <ExplorerWrapper>
           <Table className="mb-0" striped bordered hover variant="dark">
             <tbody>
-              {latestTxList.map((e, idx) => (
-                <TableRow key={idx}>
-                  <TableData>
-                    <div className="contents-top">
-                      <div className="contents type">Tx</div>
-                      <div className="contents hash">{e.blockHash}</div>
-                      <div className="contents value">{e.value} BNB</div>
-                    </div>
-                    <div className="contents-top">
-                      <div className="contents to">From: {e.from}</div>
-                      <div className="contents from">To: {e.to}</div>
-                    </div>
-                  </TableData>
-                </TableRow>
-              ))}
+              {radioValue === "block"
+                ? latestBlock.map((e, idx) => (
+                    <TableRow
+                      onClick={() => handleClick("block", e.hash)}
+                      className="mb-4"
+                      key={`block-last` + idx}
+                    >
+                      <TableData>
+                        <div className="contents-top mb-2">
+                          <div className="contents type">Bk</div>
+                          <div className="contents">{e.number}</div>
+                          <div className="contents">
+                            Txns: {e.transactions.length}
+                          </div>
+                        </div>
+                        <div className="contents-top">
+                          <div className="contents">
+                            Validated by: {e.miner}
+                          </div>
+                        </div>
+                      </TableData>
+                    </TableRow>
+                  ))
+                : latestTxList.map((e, idx) => (
+                    <TableRow
+                      onClick={() => handleClick("tx", e.txHash)}
+                      className="mb-4"
+                      key={idx}
+                    >
+                      <TableData>
+                        <div className="contents-top mb-2">
+                          <div className="contents type">Tx</div>
+                          <div className="contents">{e.txHash}</div>
+                          <div className="contents">{e.value} BNB</div>
+                        </div>
+                        <div className="contents-top">
+                          <div className="contents">From: {e.from}</div>
+                          <div className="contents">To: {e.to}</div>
+                        </div>
+                      </TableData>
+                    </TableRow>
+                  ))}
             </tbody>
           </Table>
+          <Button></Button>
         </ExplorerWrapper>
       </Col>
     </PageWrapper>
@@ -134,13 +134,11 @@ const TableRow = styled.tr`
 const TableData = styled.td`
   max-width: 33rem;
   height: 5rem;
-  display: flex;
   align-items: center;
   flex-direction: column;
   background-color: ${theme.colors.BackGround};
   color: ${theme.colors.White};
   .contents-top {
-    position: relative;
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -148,36 +146,18 @@ const TableData = styled.td`
     margin-bottom: 2px;
     margin-top: 2px;
     .contents {
-      display: flex;
-      align-items: center;
-      height: 100%;
-      min-width: 0;
+      margin: 0 0.5rem;
+      width: 100%;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      margin: 0 4px;
+      word-wrap: normal;
     }
     .type {
-      flex-grow: 1;
-      width: 50px;
+      padding: 2px;
       border: 1px solid white;
-      border-radius: 2px;
-      justify-content: center;
-    }
-    .hash {
-      flex-grow: 4;
-    }
-    .value {
-      flex-grow: 2;
-      min-width: 0;
-    }
-    .from {
-      flex-grow: 1;
-      min-width: 0;
-    }
-    .to {
-      flex-grow: 1;
-      min-width: 0;
+      border-radius: 0.4rem;
+      max-width: 4rem;
     }
   }
 `;
