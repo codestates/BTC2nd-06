@@ -5,16 +5,19 @@ import theme from "../theme";
 
 function TopNav() {
   const navigate = useNavigate();
-  const goBack = () => {
+  function goBack() {
     navigate(-1);
-  };
+  }
+  function goWallet() {
+    navigate("/wallet");
+  }
   return (
     <TopNavWrapper>
       <div className="icon" onClick={goBack}>
         <span>back</span>
       </div>
-      <div className="icon">
-        <span> wallet </span>
+      <div className="icon" onClick={goWallet}>
+        <span>wallet</span>
       </div>
     </TopNavWrapper>
   );

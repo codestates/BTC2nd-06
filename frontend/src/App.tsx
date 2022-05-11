@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import web3 from "./contracts/index";
 import ExplorerHome from "./pages/ExplorerHome";
 import ExplorerDetail from "./pages/ExplorerDetail";
+import WalletHome from "./pages/WalletHome";
 import { BlockInfo, Transaction } from "./interfaces";
 
 function App() {
@@ -65,6 +66,7 @@ function App() {
           }
         ></Route>
         <Route path="/explorer" element={<ExplorerDetail />} />
+        <Route path="/wallet" element={<WalletHome />} />
       </Routes>
     </HashRouter>
   );
