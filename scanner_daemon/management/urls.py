@@ -24,6 +24,6 @@ urlpatterns = [
 
     path('wallet/', views.MasterWalletCreateView.as_view()),
     path('wallet/master/', views.MasterWalletRetrieveView.as_view()),
-    path('wallet/derived/', views.MasterWalletRetrieveView.as_view()),
+    path('wallet/derived/', views.DerivedWalletRetrieveView.as_view()),
 
 ]
