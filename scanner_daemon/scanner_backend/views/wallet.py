@@ -38,7 +38,7 @@ class MasterWalletCreateView(APIView):
 
         # 회원가입 진행
 
-        registration_api_url = 'http://localhost:8000/auth/registration/'
+        registration_api_url = 'http://localhost:80/auth/registration/'
         headers = {'Content-Type': 'application/json'}
         body_data = {'username': username, 'password1': password, 'password2': password}
 
