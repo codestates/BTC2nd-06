@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { BlockInfo, Transaction } from "../interfaces";
 import { Table, Card } from "react-bootstrap";
 import styled from "styled-components";
@@ -10,10 +10,11 @@ import PageWrapper from "./page.styled";
 
 function ExplorerDetail() {
   const [searchParams] = useSearchParams();
-  const [targetDetail, setTargetDetail] = useState<any>();
+  const [targetDetail, setTargetDetail] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [txStatus, setTxStatus] = useState<string>();
   const [infoType] = useState<string>(searchParams.get("type") || "block");
+  const [isNotFound, setisNotFind] = useState(false);
 
   useEffect(() => {
     getHashInfo();
@@ -23,13 +24,21 @@ function ExplorerDetail() {
     const type = searchParams.get("type")!;
     const target = searchParams.get("hx")!;
     let data;
-    if (type === "block") {
-      data = await web3.eth.getBlock(target);
-    } else {
-      data = await web3.eth.getBigGasLimitTransaction(target);
-      const status = await web3.eth.getTransactionReceipt(target);
-      setTxStatus(!status ? "success" : "panding");
+    setIsLoading(true);
+    try {
+      if (type === "block") {
+        data = await web3.eth.getBlock(target);
+      } else {
+        data = await web3.eth.getBigGasLimitTransaction(target);
+        const status = await web3.eth.getTransactionReceipt(target);
+        setTxStatus(!status ? "success" : "panding");
+      }
+    } catch (error) {
+      console.log(error);
+      //no search result;
+      setIsLoading(false);
     }
+
     filterData(type, data, target);
   }
 
@@ -61,7 +70,7 @@ function ExplorerDetail() {
             timestamp: data["timestamp"],
             transactions: data["transactions"].length,
           };
-    setIsLoading(true);
+    setIsLoading(false);
     setTargetDetail(filteredData);
   }
 
@@ -76,8 +85,8 @@ function ExplorerDetail() {
             <span>Transaction Info</span>
           )}
         </div>
-        {!isLoading && <ReactLoading className="loading" type="spin" />}
-        {targetDetail && (
+        {isLoading && <ReactLoading className="loading" type="spin" />}
+        {targetDetail && Object.keys(targetDetail).length ? (
           <Card>
             <Table className="mb-0" bordered variant="dark" size="lg">
               <tbody>
@@ -92,6 +101,8 @@ function ExplorerDetail() {
               </tbody>
             </Table>
           </Card>
+        ) : (
+          !isLoading && <span className="no-search">검색 결과가 없습니다.</span>
         )}
       </DetailWrapper>
     </PageWrapper>
@@ -103,6 +114,15 @@ const DetailWrapper = styled.div`
     color: white;
     font-size: 16px;
     margin-bottom: 0.5rem;
+  }
+  .no-search {
+    position: fixed;
+    font-weight: 700;
+    color: white;
+    font-size: 16px;
+    margin-bottom: 0.5rem;
+    top: calc(40% - 32px);
+    left: calc(40% - 32px);
   }
 `;
 const TableRow = styled.tr`

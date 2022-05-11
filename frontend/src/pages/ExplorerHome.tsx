@@ -13,7 +13,7 @@ import styled from "styled-components";
 import PageWrapper from "./page.styled";
 import theme from "../theme";
 import { BlockInfo, Transaction } from "../interfaces";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface ExplorerHomeProps {
   latestTxList: Transaction[];
@@ -22,6 +22,7 @@ interface ExplorerHomeProps {
 
 function ExplorerHome({ latestTxList, latestBlock }: ExplorerHomeProps) {
   const [radioValue, setRadioValue] = useState("block");
+  const [searchKey, setSearchKey] = useState("");
   let navigate = useNavigate();
 
   const radios = [
@@ -30,6 +31,15 @@ function ExplorerHome({ latestTxList, latestBlock }: ExplorerHomeProps) {
   ];
 
   useEffect(() => {}, []);
+
+  function onClickSearch(searchKey: string) {
+    let searchType = "tx";
+    if (/^[0-9]+$/.test(searchKey)) {
+      searchType = "block";
+    }
+    goToDetail(searchType, searchKey);
+  }
+
   function goToDetail(type: string, hx: string) {
     navigate(`/explorer?type=${type}&hx=${hx}`);
   }
@@ -41,10 +51,16 @@ function ExplorerHome({ latestTxList, latestBlock }: ExplorerHomeProps) {
           <Col className="search-form">
             <Form.Control
               className="mb-3"
+              name="search"
               type="text"
-              placeholder="Search by Address / Txn Hash / Block"
+              onChange={(e) => {
+                setSearchKey(e.target.value);
+              }}
+              placeholder="Search by Txn Hash / Block number"
             />
-            <Button className="mb-3">🔎</Button>
+            <Button onClick={() => onClickSearch(searchKey)} className="mb-3">
+              🔎
+            </Button>
           </Col>
         </Form.Group>
       </Form>
@@ -71,7 +87,7 @@ function ExplorerHome({ latestTxList, latestBlock }: ExplorerHomeProps) {
               {radioValue === "block"
                 ? latestBlock.map((e, idx) => (
                     <TableRow
-                      onClick={() => goToDetail("block", e.hash)}
+                      onClick={() => goToDetail("block", String(e.number))}
                       className="mb-4"
                       key={`block-last` + idx}
                     >

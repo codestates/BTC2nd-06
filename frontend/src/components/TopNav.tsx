@@ -10,10 +10,12 @@ function TopNav() {
   };
   return (
     <TopNavWrapper>
-      <div className="back" onClick={goBack}>
-        back
+      <div className="icon" onClick={goBack}>
+        <span>back</span>
       </div>
-      <div className="wallet"> wallet </div>
+      <div className="icon">
+        <span> wallet </span>
+      </div>
     </TopNavWrapper>
   );
 }
@@ -25,13 +27,12 @@ const TopNavWrapper = styled.div`
   color: white;
   justify-content: space-between;
   align-content: center;
-  .wallet {
-    width: 5rem;
-    height: 5rem;
-  }
-  .back {
-    width: 5rem;
-    height: 5rem;
+  .icon {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
   }
 `;
 

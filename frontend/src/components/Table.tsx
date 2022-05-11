@@ -8,7 +8,7 @@ interface TableProps {
   children?: React.ReactNode;
 }
 
-function Table({ columns, data, children }: TableProps) {
+function Table({ columns, data }: TableProps) {
   return (
     <BTable striped bordered hover size="lg">
       <thead>
