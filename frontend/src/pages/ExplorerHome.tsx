@@ -30,8 +30,8 @@ function ExplorerHome({ latestTxList, latestBlock }: ExplorerHomeProps) {
   ];
 
   useEffect(() => {}, []);
-  function handleClick(type: string, hx: string) {
-    navigate(`/explorer?type=${type}$hx=${hx}`);
+  function goToDetail(type: string, hx: string) {
+    navigate(`/explorer?type=${type}&hx=${hx}`);
   }
   return (
     <PageWrapper>
@@ -71,7 +71,7 @@ function ExplorerHome({ latestTxList, latestBlock }: ExplorerHomeProps) {
               {radioValue === "block"
                 ? latestBlock.map((e, idx) => (
                     <TableRow
-                      onClick={() => handleClick("block", e.hash)}
+                      onClick={() => goToDetail("block", e.hash)}
                       className="mb-4"
                       key={`block-last` + idx}
                     >
@@ -93,7 +93,7 @@ function ExplorerHome({ latestTxList, latestBlock }: ExplorerHomeProps) {
                   ))
                 : latestTxList.map((e, idx) => (
                     <TableRow
-                      onClick={() => handleClick("tx", e.txHash)}
+                      onClick={() => goToDetail("tx", e.txHash)}
                       className="mb-4"
                       key={idx}
                     >

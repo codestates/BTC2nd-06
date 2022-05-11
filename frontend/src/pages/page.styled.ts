@@ -16,6 +16,11 @@ const PageWrapper = styled.div`
   .toggle-white {
     color: ${theme.colors.White};
   }
+  .loading {
+    position: fixed;
+    top: calc(40% - 32px);
+    left: calc(50% - 32px);
+  }
 `;
 
 export default PageWrapper;
