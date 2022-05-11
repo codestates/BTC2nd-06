@@ -38,14 +38,14 @@ class MasterWalletCreateView(APIView):
 
         # 회원가입 진행
 
-        registration_api_url = 'http://localhost:80/auth/registration/'
+        registration_api_url = 'http://localhost/auth/registration/'
         headers = {'Content-Type': 'application/json'}
         body_data = {'username': username, 'password1': password, 'password2': password}
 
         registration_response = requests.post(registration_api_url, headers=headers, data=json.dumps(body_data))
         registration_response_dict = registration_response.json()
 
-        time.sleep(0.1)  # TODO Callback Function으로 전환
+        time.sleep(1)  # TODO Callback Function으로 전환
 
         user = User.objects.get(id=registration_response_dict['user']['pk'])
 
