@@ -14,7 +14,6 @@ function ExplorerDetail() {
   const [isLoading, setIsLoading] = useState(false);
   const [txStatus, setTxStatus] = useState<string>();
   const [infoType] = useState<string>(searchParams.get("type") || "block");
-  const [isNotFound, setisNotFind] = useState(false);
 
   useEffect(() => {
     getHashInfo();
