@@ -18,7 +18,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = my_settings.SECRET_KEY
 DEBUG = my_settings.DEBUG
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    ".ap-northeast-2.compute.amazonaws.com"
+]
 
 
 # Application definition
