@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { BlockInfo, Transaction } from "../interfaces";
-import { Table, Card, Form, Col } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import styled from "styled-components";
 import TopNav from "../components/TopNav";
 import web3 from "../contracts/index";
@@ -18,9 +18,9 @@ function WalletHome() {
     <PageWrapper>
       <TopNav />
       <WalletMainWrapper>
-        <div>
+        <div className="title-box">
+          <div className="sub-title">Wallet</div>
           <div className="wallet-title">Genesis</div>
-          <div>Wallet</div>
         </div>
         <div>
           <Form.Group controlId="validationFormik101" className="form-group">
@@ -31,12 +31,19 @@ function WalletHome() {
               placeholder="enter your id"
             />
             <Form.Control
-              className="form"
+              className="form center"
               type="password"
               name="password"
               placeholder="enter your password"
             />
+            <Button className="form" variant="warning">
+              Login
+            </Button>
           </Form.Group>
+        </div>
+        <div className="first">
+          <span>처음이신가요?</span>
+          <div className="creat-wallet">지갑 생성하기</div>
         </div>
       </WalletMainWrapper>
     </PageWrapper>
@@ -49,12 +56,23 @@ const WalletMainWrapper = styled.div`
   justify-content: center;
   align-content: center;
   flex-direction: column;
+  .title-box {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    margin-bottom: 2rem;
+    flex-direction: column;
+  }
   .wallet-title {
-    font-size: 3rem;
+    font-size: 4rem;
     font-weight: 700;
     color: ${theme.colors.Yellow};
-    margin-top: 1rem;
     text-align: center;
+  }
+  .sub-title {
+    margin-top: 1rem;
+    font-size: 1.5rem;
+    margin-left: 200px;
   }
   .form {
     margin: 0.5rem;
@@ -62,7 +80,18 @@ const WalletMainWrapper = styled.div`
     width: 80%;
   }
   .form-group {
+    margin-top: 2rem;
     text-align: center;
+  }
+  .first {
+    margin-top: 4rem;
+    text-align: center;
+    font-size: 1.2rem;
+    .creat-wallet {
+      margin-top: 1.4rem;
+      font-size: 1.4rem;
+      display: block;
+    }
   }
 `;
 
