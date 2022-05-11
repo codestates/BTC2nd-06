@@ -33,5 +33,25 @@ class Transaction(models.Model):
     def __str__(self):
         return self.trx_hash
 
-    def setup_data(self):
-        pass
+    def setup_data(self, trx_data, receipt, related_sender=None, related_recipient=None):
+
+        self.trx_hash = trx_data['hash']
+        self.block_hash = trx_data['blockHash']
+        self.block_number = trx_data['blockNumber']
+        self.value = trx_data['value']
+        self.gas_used = receipt['gasUsed']
+        self.sender_address = trx_data['from']
+        self.recipient_address = trx_data['to']
+        self.transaction_payload = str(trx_data)
+
+        if related_sender:
+            self.related_sender = DerivedWallet.objects.get(address=related_sender)  # TODO DoesNotExist Exception처리
+
+        if related_recipient:
+            self.related_recipient = DerivedWallet.objects.get(address=related_recipient)
+
+        self.save()
+
+
+
+
