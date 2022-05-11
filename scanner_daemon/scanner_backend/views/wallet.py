@@ -31,7 +31,7 @@ class MasterWalletCreateView(APIView):
 
         data = request.data
 
-        user_id = data['user_id']
+        username = data['user_id']
         password = data['password']
         mnemonic_seed = data['mnemonic_seed']
         address_list = data['address_list']
@@ -40,7 +40,7 @@ class MasterWalletCreateView(APIView):
 
         registration_api_url = 'http://localhost:8000/auth/registration/'
         headers = {'Content-Type': 'application/json'}
-        body_data = {'username': user_id, 'password1': password, 'password2': password}
+        body_data = {'username': username, 'password1': password, 'password2': password}
 
         registration_response = requests.post(registration_api_url, headers=headers, data=json.dumps(body_data))
         registration_response_dict = registration_response.json()

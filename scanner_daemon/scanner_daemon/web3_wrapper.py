@@ -4,7 +4,6 @@ from web3.middleware import geth_poa_middleware
 from hexbytes import HexBytes
 import json
 from metadata import Meta
-
 RPC_URL_HTTP = Meta.RPC_URL_HTTP
 
 # WALLET_ADDRESS = Meta.WALLET_ADDRESS
