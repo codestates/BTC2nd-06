@@ -31,7 +31,7 @@ class MasterWalletCreateView(APIView):
 
         data = request.data
 
-        username = data['user_id']
+        username = data['username']
         password = data['password']
         mnemonic_seed = data['mnemonic_seed']
         address_list = data['address_list']
