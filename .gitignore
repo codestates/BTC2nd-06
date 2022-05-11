@@ -1,2 +1,5 @@
+# frontend ignore 
+
 .gitmessage.txt
 /frontend/node_modules
+/frontend/build

@@ -1,32 +1,42 @@
 from web3_wrapper import *
+from scanner_backend.models import *
 
 
 def simple_scanner_daemon(account_address):  # CA or EOA address
     """
     최근 생성된 블록에 특정 address가 포함된 트랜잭션이 있는지 검사
     """
+    address_list = []
+
+    wallets = DerivedWallet.objects.all()
+    for wallet in wallets:
+        address_list.append((wallet.id, wallet.address))  # DerivedWallet (id, address) tuple
 
     latest_block_number = get_latest_block_number()
 
-    trx_list = get_transactions_from_block(latest_block_number, data_type='str')
+    trx_list = get_transactions_from_block(latest_block_number, data_format='str')
 
-    print(trx_list)
-    # for trx in trx_list:
-    #     trx_data = web3.eth.get_transaction(trx)
-    #
-    #     trx_from = trx_data['from']
-    #     trx_to = trx_data['to']
-    #
-    #     # if account_address == trx_from:
-    #     #     print('DONE')
-    #     #     break
-    #     # elif account_address == trx_to:
-    #     #     print('DONE')
-    #     #     break
-    #
-    #     print(f'transaction: {trx_from} => {trx_to}')  # type: 'str'
-    #     print({type(trx_to)})
-    #     print('\n')
+    for trx in trx_list:
+        trx_data = get_transaction(trx)
+
+        trx_from = trx_data['from']
+        trx_to = trx_data['to']
+
+        # TODO 2중 for문 구조 개선
+        if trx_from in address_list:
+            idx = address_list.index(trx_from)
+            transaction = Transaction()
+            # transaction = Transaction(related_sender=)  # TODO Related Field 연결
+            transaction.setup_data()
+            transaction.save()  # TRX 추가
+            break
+
+        elif trx_to in address_list:
+            print('DONE')
+            break
+
+        else:
+            continue
 
 
 def transaction_confirm_scanner():
@@ -39,7 +49,7 @@ def transaction_confirm_scanner():
         if block_marker != latest_block_number:
             block_marker = latest_block_number
             print(block_marker)
-            trx_list = get_transactions_from_block(block_marker, data_type='str')
+            trx_list = get_transactions_from_block(block_marker, data_format='str')
             if trx_hash in trx_list:
                 print(f'Transaction {trx_hash} Confirmed.')
                 print(f'Block Number: {block_marker}')
