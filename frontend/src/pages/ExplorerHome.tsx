@@ -112,7 +112,6 @@ function ExplorerHome({ latestTxList, latestBlock }: ExplorerHomeProps) {
                   ))}
             </tbody>
           </Table>
-          <Button></Button>
         </ExplorerWrapper>
       </Col>
     </PageWrapper>
