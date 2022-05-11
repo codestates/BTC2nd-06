@@ -19,8 +19,8 @@ class Transaction(models.Model):
     block_number = models.IntegerField(default=0)
 
     # TODO DerivedWallet에 연결 검토
-    related_sender = models.ForeignKey(DerivedWallet, on_delete=models.CASCADE, related_name='sender')
-    related_recipient = models.ForeignKey(DerivedWallet, on_delete=models.CASCADE, related_name='recipient')
+    related_sender = models.ForeignKey(DerivedWallet, blank=True, null=True, on_delete=models.CASCADE, related_name='sender')
+    related_recipient = models.ForeignKey(DerivedWallet, blank=True, null=True, on_delete=models.CASCADE, related_name='recipient')
 
     value = models.IntegerField(default=0)  # 18 Decimals applied(BNB)
     gas_used = models.IntegerField(default=0)
