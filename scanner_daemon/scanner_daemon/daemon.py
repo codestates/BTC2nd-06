@@ -55,8 +55,12 @@ def simple_scanner_daemon():
 
         # 새로운 최신 블록이 detect되면 7개 이전의 블록으로 검증
         print(f'confirmed: {confirmed_block_number}')
+        if trx_list is None:
+            continue
         for trx in trx_list:  # 트랜잭션 리스트 순회  # TODO 멀티프로세싱
             trx_data = get_transaction(trx, data_format='str')  # dictionary
+            if not trx_data:
+                continue
             receipt = get_transaction_receipt(trx, data_format='str')  # TODO Transaction.setup_data 비동기 처리
 
             trx_from = trx_data['from']
@@ -72,7 +76,7 @@ def simple_scanner_daemon():
                 if trx_to == address:
                     _create_transaction_record(confirmed_block_number, trx_data, receipt,
                                                related_sender=None, related_recipient=address)
-                continue
+
         print(f'for loop DONE. Number of trxs: {len(trx_list)}\n')
 
 
