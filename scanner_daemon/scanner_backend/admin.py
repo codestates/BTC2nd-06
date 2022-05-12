@@ -21,7 +21,7 @@ class TransactionAdmin(admin.ModelAdmin):
     list_display = ['trx_hash', 'related_sender', 'related_recipient',
                     'value', 'gas_used', 'sender_address', 'recipient_address']
     readonly_fields = ['related_sender', 'related_recipient']
-
+    ordering = ('-created_at',)
 
 
 admin.site.register(MasterWallet, MasterWalletAdmin)
