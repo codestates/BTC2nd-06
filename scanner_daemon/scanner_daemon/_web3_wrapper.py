@@ -1,5 +1,5 @@
 from web3 import Web3
-from web3.exceptions import BlockNotFound
+from web3.exceptions import BlockNotFound, TransactionNotFound
 from web3.datastructures import AttributeDict
 from web3.middleware import geth_poa_middleware
 from hexbytes import HexBytes
@@ -79,32 +79,46 @@ def get_latest_block_number():
 
 
 def get_block_header(block_identifier, data_format='hexbytes'):
-    block = dict(web3.eth.get_block(block_identifier))
+    try:
+        block = dict(web3.eth.get_block(block_identifier))
+    except BlockNotFound:
+        return None
     block_header = _dict_without_keys(block, ['transactions'])
 
     return _select_data_format(block_header, data_format)
 
 
 def get_transactions_from_block(block_identifier, data_format='hexbytes'):
-    block = dict(web3.eth.get_block(block_identifier))
+    try:
+        block = dict(web3.eth.get_block(block_identifier))
+    except BlockNotFound:
+        return None
     transactions = block['transactions']
 
     return _select_data_format(transactions, data_format)
 
 
 def get_block(block_identifier, data_format='hexbytes'):  # block header + transactions
-    block = dict(web3.eth.get_block(block_identifier))
+    try:
+        block = dict(web3.eth.get_block(block_identifier))
+    except BlockNotFound:
+        return None
 
     return _select_data_format(block, data_format)
 
 
 def get_transaction(trx_hash, data_format='hexbytes'):
-    transaction = dict(web3.eth.get_transaction(trx_hash))
+    try:
+        transaction = dict(web3.eth.get_transaction(trx_hash))
+    except TransactionNotFound:
+        return None
 
     return _select_data_format(transaction, data_format)
 
 
 def get_transaction_receipt(trx_hash, data_format='hexbytes'):
-    receipt = dict(web3.eth.get_transaction_receipt(trx_hash))
-
+    try:
+        receipt = dict(web3.eth.get_transaction_receipt(trx_hash))
+    except TransactionNotFound:
+        return None
     return _select_data_format(receipt, data_format)
