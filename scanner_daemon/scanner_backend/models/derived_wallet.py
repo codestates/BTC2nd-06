@@ -17,5 +17,5 @@ class DerivedWallet(models.Model):
 
     balance = models.FloatField(default=0)
 
-    # def __str__(self):
-    #     return str(self.address) if self.address else '_'
+    def __str__(self):
+        return str(self.address) if self.address else '_'
