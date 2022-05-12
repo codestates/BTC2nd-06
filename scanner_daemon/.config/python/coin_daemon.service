@@ -1,0 +1,15 @@
+[Unit]
+Description=daemon.py service
+After=syslog.target
+
+[Service]
+ExecStart=/srv/BTC2nd-06/scanner_daemon/venv/bin/python /srv/BTC2nd-06/scanner_daemon/scanner_daemon/daemon.py
+
+Restart=always
+KillSignal=SIGQUIT
+Type=notify
+StandardError=syslog
+NotifyAccess=all
+
+[Install]
+WantedBy=multi-user.target
