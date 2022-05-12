@@ -46,7 +46,7 @@ class MasterWalletCreateView(APIView):
         registration_response_dict = registration_response.json()
 
         time.sleep(1)  # TODO Callback Function으로 전환
-        print(f"response dict user key: {registration_response_dict['user']}")
+        print(f"response dict: {registration_response_dict}")
         user = User.objects.get(id=registration_response_dict['user']['pk'])
 
         # MasterWallet 객체 생성
