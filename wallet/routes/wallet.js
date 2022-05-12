@@ -25,10 +25,17 @@ router.post("/wallet", async (req, res) => {
         address_list: accounts,
       }
     );
-    console.log("SUCCESS");
-    console.log(result.data);
-
-    res.status(200).json({ password, mnemonicId, mnemonic, accounts });
+    const { access_token, refresh_token } = result.data;
+    res
+      .status(200)
+      .json({
+        access_token,
+        refresh_token,
+        password,
+        mnemonicId,
+        mnemonic,
+        accounts,
+      });
   } catch (error) {
     console.log(error);
     res.status(404).json({ error: error.message });
