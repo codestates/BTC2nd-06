@@ -2,12 +2,11 @@
 import uuid
 
 # Django Core
-from django.contrib.auth.models import User
 from django.db import models
 from django.core.validators import MinLengthValidator
 
 # Project
-from .master_wallet import MasterWallet
+from .derived_wallet import DerivedWallet
 
 
 class Transaction(models.Model):
@@ -19,9 +18,9 @@ class Transaction(models.Model):
     block_hash = models.CharField(default='0x'+'0'*64, max_length=66, validators=[MinLengthValidator(66)])
     block_number = models.IntegerField(default=0)
 
-    # TODO DerivedAddress에 연결 검토
-    related_sender = models.ForeignKey(MasterWallet, on_delete=models.CASCADE, related_name='sender')
-    related_recipient = models.ForeignKey(MasterWallet, on_delete=models.CASCADE, related_name='recipient')
+    # TODO DerivedWallet에 연결 검토
+    related_sender = models.ForeignKey(DerivedWallet, on_delete=models.CASCADE, related_name='sender')
+    related_recipient = models.ForeignKey(DerivedWallet, on_delete=models.CASCADE, related_name='recipient')
 
     value = models.IntegerField(default=0)  # 18 Decimals applied(BNB)
     gas_used = models.IntegerField(default=0)
@@ -33,4 +32,26 @@ class Transaction(models.Model):
 
     def __str__(self):
         return self.trx_hash
+
+    def setup_data(self, trx_data, receipt, related_sender=None, related_recipient=None):
+
+        self.trx_hash = trx_data['hash']
+        self.block_hash = trx_data['blockHash']
+        self.block_number = trx_data['blockNumber']
+        self.value = trx_data['value']
+        self.gas_used = receipt['gasUsed']
+        self.sender_address = trx_data['from']
+        self.recipient_address = trx_data['to']
+        self.transaction_payload = str(trx_data)
+
+        if related_sender:
+            self.related_sender = DerivedWallet.objects.get(address=related_sender)  # TODO DoesNotExist Exception처리
+
+        if related_recipient:
+            self.related_recipient = DerivedWallet.objects.get(address=related_recipient)
+
+        self.save()
+
+
+
 

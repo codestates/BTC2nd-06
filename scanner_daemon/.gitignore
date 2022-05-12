@@ -7,3 +7,4 @@ venv/
 .gitmessage.txt
 migrations/
 my_settings.py
+.config/nginx/mysite.conf
