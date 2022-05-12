@@ -31,7 +31,6 @@ class Service {
   }
 
   post(resource: string, params = {}) {
-    console.log("post", params);
     return this.instance.post(`${resource}`, params).catch((error: any) => {
       throw new Error(`service ${resource} ${error}`);
     });

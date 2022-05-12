@@ -5,16 +5,34 @@ import { Form, Button } from "react-bootstrap";
 import styled from "styled-components";
 import TopNav from "../components/TopNav";
 import web3 from "../contracts/index";
-import ReactLoading from "react-loading";
+import { toast } from "react-toastify";
+import { getMasterWalletInfo } from "../common/api";
+
 import PageWrapper from "./page.styled";
 import theme from "../theme";
 
 function WalletHome() {
   const [balance, setBalance] = useState();
   const [targetAddress, setTargetAddress] = useState();
-  useEffect(() => {}, []);
+  useEffect(() => {
+    (async () => {
+      await getWalletInfo();
+    })();
+  }, []);
 
-  function getWalletInfo() {}
+  async function getWalletInfo() {
+    try {
+      const { data } = await getMasterWalletInfo();
+      if (data) {
+        console.log("!!!!!!", data);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.warn(`회원가입 중 문제가 발생하였습니다. \n ${error}`);
+    }
+  }
+
+  async function signup() {}
   return (
     <PageWrapper>
       <TopNav />

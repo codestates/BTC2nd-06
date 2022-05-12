@@ -31,15 +31,9 @@ function WalletSignup() {
         toast.warn("ID와 PASSWORD를 입력 해주세요!");
         return;
       }
-    } else if (signupStep === 1) {
-    } else if (signupStep === 2) {
     }
     setSginupStep(signupStep + 1);
   }
-  function prevStep() {
-    setSginupStep(signupStep - 1);
-  }
-
   async function signup() {
     try {
       const res = await createWallet({ username: id, password });

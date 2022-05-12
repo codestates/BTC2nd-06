@@ -5,7 +5,9 @@ export async function createWallet(params: {
   password: string;
 }) {
   const { data } = await api.wallet.post("/api/wallet", params);
-  if (data!.access_token) {
+  console.log("@@@@@@@@", data);
+  if (data.access_token) {
+    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", data.access_tokens);
     localStorage.setItem("access_token", JSON.stringify(data.access_token));
     api.deamon.setToken(data.access_token);
     return true;
@@ -14,7 +16,7 @@ export async function createWallet(params: {
 }
 
 export async function getMasterWalletInfo() {
-  return await api.deamon.get("api/wallet/addresses");
+  return await api.deamon.get("wallet/master/");
 }
 
 export async function getSlaveWalletInfo({
@@ -22,5 +24,5 @@ export async function getSlaveWalletInfo({
 }: {
   addresse: string;
 }) {
-  return await api.deamon.get("wallet/derived", { target });
+  return await api.deamon.get("wallet/derived/", { target });
 }
