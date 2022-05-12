@@ -31,7 +31,7 @@ class Transaction(models.Model):
 
     transaction_payload = models.TextField()  # JSON format string
 
-    create_at = models.DateTimeField(default=timezone.localtime)
+    created_at = models.DateTimeField(default=timezone.localtime)
 
     def __str__(self):
         return self.trx_hash
