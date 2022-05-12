@@ -31,14 +31,10 @@ def simple_scanner_daemon():
     최근 생성된 블록에 특정 address가 포함된 트랜잭션이 있는지 검사 후 Transaction 레코드를 DB에 저장 (+ DerivedAddress 객체와 연결)
     """
     confirm_depth = 5  # 최소 5개의 블록에 의해 confirm된 블록만 검사
-    # TODO DB에 새로운 지갑 주소가 추가되면 데몬을 재실행
 
     latest_block_number = get_latest_block_number()
     print(f'latest block: {latest_block_number}')
     block_number_tracker = latest_block_number
-
-    wallets = DerivedWallet.objects.all()
-    address_list = [wallet.address for wallet in wallets]
 
     print('-------------------- daemon initiated --------------------')
 
@@ -49,6 +45,9 @@ def simple_scanner_daemon():
         try:
             trx_list = get_transactions_from_block(confirmed_block_number, data_format='str')
             block_number_tracker += 1
+            wallets = DerivedWallet.objects.all()  # 지갑 주소 불러오기
+            address_list = [wallet.address for wallet in wallets]
+
         except BlockNotFound:  # block_number_tracker에 해당하는 Block이 아직 생성되지 않은 경우
             print(f"Block #{block_number_tracker} is not yet created.")
             time.sleep(0.1)
@@ -56,9 +55,9 @@ def simple_scanner_daemon():
 
         # 새로운 최신 블록이 detect되면 7개 이전의 블록으로 검증
         print(f'confirmed: {confirmed_block_number}')
-        for trx in trx_list:  # 트랜잭션 리스트 순회
+        for trx in trx_list:  # 트랜잭션 리스트 순회  # TODO 멀티프로세싱
             trx_data = get_transaction(trx, data_format='str')  # dictionary
-            receipt = get_transaction_receipt(trx, data_format='str')  # TODO HTTP 통신 및 Transaction.setup_data 비동기 처리
+            receipt = get_transaction_receipt(trx, data_format='str')  # TODO Transaction.setup_data 비동기 처리
 
             trx_from = trx_data['from']
             trx_to = trx_data['to']

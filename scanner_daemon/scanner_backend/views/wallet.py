@@ -6,10 +6,11 @@ import time
 # Django Core
 from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny
-
-# 서드 파티 라이브러리
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+# 서드 파티 라이브러리
 
 # 프로젝트 앱
 from scanner_backend.models import MasterWallet, DerivedWallet, Transaction
@@ -47,7 +48,10 @@ class MasterWalletCreateView(APIView):
 
         time.sleep(1)  # TODO Callback Function으로 전환
         print(f"response dict: {registration_response_dict}")
-        user = User.objects.get(id=registration_response_dict['user']['pk'])
+        try:
+            user = User.objects.get(id=registration_response_dict['user']['pk'])
+        except User.DoesNotExist:
+            return Response({"error_msg": "Registratio form data is invalid."}, status=status.HTTP_400_BAD_REQUEST)
 
         # MasterWallet 객체 생성
         master_wallet = MasterWallet(user=user, mnemonic_seed=mnemonic_seed)
@@ -68,8 +72,11 @@ class MasterWalletRetrieveView(APIView):
     """
     def get(self, request):
         user = request.user
+        try:
+            master_wallet = MasterWallet.objects.get(user=user)
+        except MasterWallet.DoesNotExist:
+            return Response({"error_msg": "The user has no MasterWallet object."}, status=status.HTTP_400_BAD_REQUEST)
 
-        master_wallet = MasterWallet.objects.get(user=user)
         mnemonic_seed = master_wallet.mnemonic_seed
 
         address_list = []
@@ -96,7 +103,7 @@ class DerivedWalletRetrieveView(APIView):
         try:
             derived_wallet = DerivedWallet.objects.get(address=address)
         except DerivedWallet.DoesNotExist:
-            raise Exception
+            return Response({"error_msg": "No such DerivedWallet object."}, status=status.HTTP_400_BAD_REQUEST)
 
         trx_hash_list = []
         transactions = derived_wallet.transaction_set
