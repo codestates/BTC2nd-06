@@ -16,26 +16,26 @@ router.post("/wallet", async (req, res) => {
 
     fs.writeFileSync(`mnemonic/${mnemonicId}.txt`, mnemonic);
     // Call API to create Account to dB
+
     const result = await axios.post(
       "http://ec2-15-164-229-111.ap-northeast-2.compute.amazonaws.com/wallet/",
       {
         username,
         password,
+        mnemonicId,
         mnemonic_seed: mnemonic,
         address_list: accounts,
       }
     );
     const { access_token, refresh_token } = result.data;
-    res
-      .status(200)
-      .json({
-        access_token,
-        refresh_token,
-        password,
-        mnemonicId,
-        mnemonic,
-        accounts,
-      });
+    res.status(200).json({
+      access_token,
+      refresh_token,
+      password,
+      mnemonicId,
+      mnemonic,
+      accounts,
+    });
   } catch (error) {
     console.log(error);
     res.status(404).json({ error: error.message });
