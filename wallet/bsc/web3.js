@@ -9,6 +9,7 @@ module.exports = (mnemonic) => {
     rpcURL
     // remember to change this to your own endpoint!
   );
+  provider.engine.stop();
   return new Web3(provider);
 };
 
