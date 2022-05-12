@@ -23,8 +23,8 @@ class Transaction(models.Model):
     related_sender = models.ForeignKey(DerivedWallet, blank=True, null=True, on_delete=models.CASCADE, related_name='sender')
     related_recipient = models.ForeignKey(DerivedWallet, blank=True, null=True, on_delete=models.CASCADE, related_name='recipient')
 
-    value = models.PositiveBigIntegerField(default=0)  # 18 Decimals applied(BNB)
-    gas_used = models.PositiveBigIntegerField(default=0)
+    value = models.BigIntegerField(default=0)  # 18 Decimals applied(BNB)
+    gas_used = models.BigIntegerField(default=0)
 
     sender_address = models.CharField(max_length=42, validators=[MinLengthValidator(42)], blank=True, null=True)  # Hash Address
     recipient_address = models.CharField(max_length=42, validators=[MinLengthValidator(42)], blank=True, null=True)
