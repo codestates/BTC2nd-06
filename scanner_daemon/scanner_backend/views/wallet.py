@@ -35,11 +35,14 @@ class MasterWalletCreateView(APIView):
 
         data = request.data
 
-        username = data['username']
-        password = data['password']
-        mnemonic_seed = data['mnemonic_seed']
-        mnemonic_id = data['mnemonicId']
-        address_list = data['address_list']
+        try:
+            username = data['username']
+            password = data['password']
+            mnemonic_seed = data['mnemonic_seed']
+            mnemonic_id = data['mnemonicId']
+            address_list = data['address_list']
+        except KeyError:
+            return Response({"error_msg": "MasterWallet creation form data is invalid."}, status=status.HTTP_400_BAD_REQUEST)
 
         # 회원가입 진행
 
@@ -55,7 +58,7 @@ class MasterWalletCreateView(APIView):
         try:
             user = User.objects.get(id=registration_response_dict['user']['pk'])
         except User.DoesNotExist:
-            return Response({"error_msg": "Registratio form data is invalid."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error_msg": "Registration form data is invalid."}, status=status.HTTP_400_BAD_REQUEST)
 
         # MasterWallet 객체 생성
         master_wallet = MasterWallet(user=user, mnemonic_seed=mnemonic_seed, mnemonic_id=mnemonic_id)
