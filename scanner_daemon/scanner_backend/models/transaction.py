@@ -38,7 +38,10 @@ class Transaction(models.Model):
         self.trx_hash = trx_data['hash']
         self.block_hash = trx_data['blockHash']
         self.block_number = trx_data['blockNumber']
-        self.value = trx_data['value']
+        if related_sender:
+            self.value = -1 * trx_data['value']
+        if related_recipient:
+            self.value = trx_data['value']  # 자신에게 보낼 경우 positive(+)
         self.gas_used = receipt['gasUsed']
         self.sender_address = trx_data['from']
         self.recipient_address = trx_data['to']

@@ -5,15 +5,24 @@ import time
 
 # Django Core
 from django.contrib.auth.models import User
+
+# 서드 파티 라이브러리
 from rest_framework.permissions import AllowAny
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import serializers
 
-# 서드 파티 라이브러리
 
 # 프로젝트 앱
-from scanner_backend.models import MasterWallet, DerivedWallet
+from scanner_backend.models import MasterWallet, DerivedWallet, Transaction
+
+
+class TransactionSimpleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = ['trx_hash', 'block_hash', 'block_number', 'value', 'gas_used',
+                  'sender_address', 'recipient_address']
 
 
 class MasterWalletCreateView(APIView):
@@ -29,6 +38,7 @@ class MasterWalletCreateView(APIView):
         username = data['username']
         password = data['password']
         mnemonic_seed = data['mnemonic_seed']
+        mnemonic_id = data['mnemonicId']
         address_list = data['address_list']
 
         # 회원가입 진행
@@ -48,7 +58,7 @@ class MasterWalletCreateView(APIView):
             return Response({"error_msg": "Registratio form data is invalid."}, status=status.HTTP_400_BAD_REQUEST)
 
         # MasterWallet 객체 생성
-        master_wallet = MasterWallet(user=user, mnemonic_seed=mnemonic_seed)
+        master_wallet = MasterWallet(user=user, mnemonic_seed=mnemonic_seed, mnemonic_id=mnemonic_id)
         master_wallet.save()
 
         # DerivedWallet 객체 10개 생성
@@ -99,14 +109,7 @@ class DerivedWalletRetrieveView(APIView):
         except DerivedWallet.DoesNotExist:
             return Response({"error_msg": "No such DerivedWallet object."}, status=status.HTTP_400_BAD_REQUEST)
 
-        trx_hash_list = []
         transactions = derived_wallet.transaction_set
-        for transaction in transactions:
-            trx_hash_list.append(transaction.trx_hash)
+        serializer = TransactionSimpleSerializer(transactions, many=True)
 
-        # TODO 리턴 데이터 더 상세하게
-        data = {
-            'transaction_list': trx_hash_list
-        }
-
-        return Response(data)
+        return Response(serializer.data)

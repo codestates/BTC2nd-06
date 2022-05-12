@@ -14,6 +14,7 @@ class MasterWallet(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='user')
 
     mnemonic_seed = models.TextField(blank=True, null=True)
+    mnemonic_id = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return str(self.user.username)  # TODO 회원가입 부분
