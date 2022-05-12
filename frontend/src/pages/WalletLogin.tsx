@@ -1,23 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { BlockInfo, Transaction } from "../interfaces";
+import { useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import styled from "styled-components";
 import TopNav from "../components/TopNav";
 import PageWrapper from "./page.styled";
-import { loginWallet } from "../common/api";
+import { toast } from "react-toastify";
+import { createWallet } from "../common/api";
 import theme from "../theme";
 
 function WalletLogin() {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
-  useEffect(() => {
-    login();
-  }, []);
+  const navigate = useNavigate();
+
+  function goSingupPage() {
+    navigate(`/wallet/signup`);
+  }
+
+  useEffect(() => {}, []);
+  const notify = () => toast.warn("Wow so easy!");
 
   async function login() {
-    const data = await loginWallet();
-    console.log(data);
+    // const data = await createWallet();
+    // console.log(data);
   }
 
   return (
@@ -25,21 +30,31 @@ function WalletLogin() {
       <TopNav />
       <WalletMainWrapper>
         <div className="title-box">
-          <div className="sub-title">Wallet</div>
-          <div className="wallet-title">Genesis</div>
+          <div className="sub-title" onClick={login}>
+            Wallet
+          </div>
+          <div className="wallet-title" onClick={notify}>
+            Genesis
+          </div>
         </div>
         <div>
-          <Form.Group controlId="validationFormik101" className="form-group">
+          <Form.Group className="form-group">
             <Form.Control
               className="form"
               type="text"
               name="id"
+              onChange={(e) => {
+                setId(e.target.value);
+              }}
               placeholder="enter your id"
             />
             <Form.Control
               className="form center"
               type="password"
               name="password"
+              onChange={(e) => {
+                setPassword(e.target.value);
+              }}
               placeholder="enter your password"
             />
             <Button className="form" variant="warning">
@@ -49,7 +64,9 @@ function WalletLogin() {
         </div>
         <div className="first">
           <span>처음이신가요?</span>
-          <div className="creat-wallet">지갑 생성하기</div>
+          <div className="creat-wallet" onClick={goSingupPage}>
+            지갑 생성하기
+          </div>
         </div>
       </WalletMainWrapper>
     </PageWrapper>

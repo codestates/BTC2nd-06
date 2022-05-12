@@ -10,88 +10,44 @@ import PageWrapper from "./page.styled";
 import theme from "../theme";
 
 function WalletHome() {
-  const [id, setId] = useState("");
-  const [password, setPassword] = useState("");
+  const [balance, setBalance] = useState();
+  const [targetAddress, setTargetAddress] = useState();
   useEffect(() => {}, []);
 
+  function getWalletInfo() {}
   return (
     <PageWrapper>
       <TopNav />
-      <WalletMainWrapper>
-        <div className="title-box">
-          <div className="sub-title">Wallet</div>
-          <div className="wallet-title">Genesis</div>
-        </div>
+      <WalletHomeWrapper>
         <div>
-          <Form.Group controlId="validationFormik101" className="form-group">
-            <Form.Control
-              className="form"
-              type="text"
-              name="id"
-              placeholder="enter your id"
-            />
-            <Form.Control
-              className="form center"
-              type="password"
-              name="password"
-              placeholder="enter your password"
-            />
-            <Button className="form" variant="warning">
-              Login
-            </Button>
-          </Form.Group>
+          <Form.Select aria-label="Default select example">
+            <option>Open this select menu</option>
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+          </Form.Select>
+          <div className="logo"></div>
+          <div className="balance"> BnB</div>
         </div>
-        <div className="first">
-          <span>처음이신가요?</span>
-          <div className="creat-wallet">지갑 생성하기</div>
-        </div>
-      </WalletMainWrapper>
+      </WalletHomeWrapper>
     </PageWrapper>
   );
 }
 
-const WalletMainWrapper = styled.div`
+const WalletHomeWrapper = styled.div`
   color: white;
   display: flex;
   justify-content: center;
-  align-content: center;
+  align-items: center;
   flex-direction: column;
-  .title-box {
-    display: flex;
-    justify-content: center;
-    align-content: center;
-    margin-bottom: 2rem;
-    flex-direction: column;
-  }
-  .wallet-title {
-    font-size: 4rem;
-    font-weight: 700;
-    color: ${theme.colors.Yellow};
-    text-align: center;
-  }
-  .sub-title {
-    margin-top: 1rem;
-    font-size: 1.5rem;
-    margin-left: 200px;
-  }
-  .form {
-    margin: 0.5rem;
+  .logo {
     display: inline-block;
-    width: 80%;
+    width: 10rem;
+    height: 10rem;
+    background-color: gray;
   }
-  .form-group {
-    margin-top: 2rem;
-    text-align: center;
-  }
-  .first {
-    margin-top: 4rem;
-    text-align: center;
-    font-size: 1.2rem;
-    .creat-wallet {
-      margin-top: 1.4rem;
-      font-size: 1.4rem;
-      display: block;
-    }
+  .balance {
+    font-size: 2.2rem;
   }
 `;
 

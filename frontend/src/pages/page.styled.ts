@@ -9,6 +9,7 @@ const PageWrapper = styled.div`
   height: 60rem;
   background-color: ${theme.colors.BackGround};
   padding: 0rem 2rem;
+  color: ${theme.colors.White};
 
   .search-form {
     display: flex;
