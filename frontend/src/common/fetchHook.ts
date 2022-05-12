@@ -1,12 +1,13 @@
 import { useState } from "react";
 
-interface State {
-  data: undefined;
-  error: undefined;
-  isLoading: boolean;
-}
-
-export const useFetch = (apiFunc: Function) => {
+export const useFetch = (
+  apiFunc: Function
+): [
+  { data: object } | undefined,
+  Function,
+  boolean | undefined,
+  string | undefined
+] => {
   const [state, setState] = useState({
     data: undefined,
     error: undefined,
@@ -14,7 +15,7 @@ export const useFetch = (apiFunc: Function) => {
   });
 
   const fetch = async (params = {}) => {
-    let newState: State = {
+    let newState = {
       data: undefined,
       error: undefined,
       isLoading: false,
@@ -23,7 +24,7 @@ export const useFetch = (apiFunc: Function) => {
     setState({ ...state, isLoading: true });
     try {
       const res = await apiFunc(params);
-      const data = res.data?.data || res.data || res;
+      const data = res.data || res;
       newState = { ...state, data };
     } catch (error: any) {
       console.error(error);
