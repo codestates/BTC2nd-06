@@ -82,6 +82,7 @@ class MasterWalletRetrieveView(APIView):
             return Response({"error_msg": "The user has no MasterWallet object."}, status=status.HTTP_400_BAD_REQUEST)
 
         mnemonic_seed = master_wallet.mnemonic_seed
+        mnemonic_id = master_wallet.mnemonic_id
 
         address_list = []
 
@@ -91,6 +92,7 @@ class MasterWalletRetrieveView(APIView):
 
         data = {
             'mnemonic_seed': mnemonic_seed,
+            'mnemonic_id': mnemonic_id,
             'address_list': address_list
         }
 
