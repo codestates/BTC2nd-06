@@ -13,7 +13,7 @@ os.environ['DJANGO_SETTINGS_MODULE'] = 'management.settings'
 os.environ['DJANGO_ALLOW_ASYNC_UNSAFE'] = 'true'
 django.setup()
 
-from web3_wrapper import *
+from _web3_wrapper import *
 from scanner_backend.models import *
 
 

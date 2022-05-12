@@ -13,13 +13,7 @@ from rest_framework.views import APIView
 # 서드 파티 라이브러리
 
 # 프로젝트 앱
-from scanner_backend.models import MasterWallet, DerivedWallet, Transaction
-from scanner_backend.serializers import MasterWalletSerializer, DerivedWalletSerializer
-
-
-# TODO Exception 처리
-# TODO form data validation
-# TODO serializer 도입
+from scanner_backend.models import MasterWallet, DerivedWallet
 
 
 class MasterWalletCreateView(APIView):
