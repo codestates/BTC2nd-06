@@ -9,6 +9,7 @@ import ReactLoading from "react-loading";
 import PageWrapper from "./page.styled";
 
 function ExplorerDetail() {
+  
   const [searchParams] = useSearchParams();
   const [targetDetail, setTargetDetail] = useState<any>([]);
   const [isLoading, setIsLoading] = useState(false);

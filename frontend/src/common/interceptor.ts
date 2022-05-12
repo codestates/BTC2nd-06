@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const BASE_URL = {
-  NODEJS: `http://${window.location.host.split(":")[0]}:2000`,
+  NODEJS: `http://localhost:2000`,
   DJANGO: "http://ec2-15-164-229-111.ap-northeast-2.compute.amazonaws.com",
 } as const;
 
