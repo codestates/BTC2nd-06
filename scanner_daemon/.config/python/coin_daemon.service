@@ -7,7 +7,8 @@ ExecStart=/srv/BTC2nd-06/scanner_daemon/venv/bin/python /srv/BTC2nd-06/scanner_d
 
 Restart=always
 KillSignal=SIGQUIT
-Type=notify
+Type=simple
+ StandardOutput=/var/log/python/coin_daemon/daemon.log
 StandardError=syslog
 NotifyAccess=all
 
