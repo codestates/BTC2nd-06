@@ -50,16 +50,12 @@ def simple_scanner_daemon():
             time.sleep(0.1)
             continue  # while문의 시작점으로
 
-        block_number_tracker += 1
         wallets = DerivedWallet.objects.all()  # 지갑 주소 불러오기
         address_list = [wallet.address for wallet in wallets]
 
-
         # 새로운 최신 블록이 detect되면 7개 이전의 블록으로 검증
         print(f'confirmed: {confirmed_block_number}')
-        if trx_list is None:
-            print('trx_list is None')
-            continue
+
         for trx in trx_list:  # 트랜잭션 리스트 순회  # TODO 멀티프로세싱
             trx_data = get_transaction(trx, data_format='str')  # dictionary
             if not trx_data:
@@ -68,12 +64,12 @@ def simple_scanner_daemon():
             receipt = get_transaction_receipt(trx, data_format='str')  # TODO Transaction.setup_data 비동기 처리
             if receipt is None:
                 print('receipt is None')
+                continue
 
             trx_from = trx_data['from']
             trx_to = trx_data['to']
 
             for address in address_list:  # 주소 리스트 순회
-                # print(f'value of address: {address}, type: {type(address)}')
 
                 if trx_from == address:
                     _create_transaction_record(confirmed_block_number, trx_data, receipt,
@@ -84,6 +80,7 @@ def simple_scanner_daemon():
                                                related_sender=None, related_recipient=address)
 
         print(f'for loop DONE. Number of trxs: {len(trx_list)}\n')
+        block_number_tracker += 1
 
 
 simple_scanner_daemon()
