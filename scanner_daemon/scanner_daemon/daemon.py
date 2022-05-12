@@ -42,16 +42,18 @@ def simple_scanner_daemon():
     while True:
 
         confirmed_block_number = block_number_tracker - confirm_depth
-        try:
-            trx_list = get_transactions_from_block(confirmed_block_number, data_format='str')
-            block_number_tracker += 1
-            wallets = DerivedWallet.objects.all()  # 지갑 주소 불러오기
-            address_list = [wallet.address for wallet in wallets]
 
-        except BlockNotFound:  # block_number_tracker에 해당하는 Block이 아직 생성되지 않은 경우
+        trx_list = get_transactions_from_block(confirmed_block_number, data_format='str')
+
+        if not trx_list:  # block_tracker가 너무 빨라 아직 최신 블록이 생성되지 않은 경우
             print(f"Block #{block_number_tracker} is not yet created.")
             time.sleep(0.1)
-            continue
+            continue  # while문의 시작점으로
+
+        block_number_tracker += 1
+        wallets = DerivedWallet.objects.all()  # 지갑 주소 불러오기
+        address_list = [wallet.address for wallet in wallets]
+
 
         # 새로운 최신 블록이 detect되면 7개 이전의 블록으로 검증
         print(f'confirmed: {confirmed_block_number}')
