@@ -16,7 +16,8 @@ class DerivedWalletAdmin(admin.ModelAdmin):
 
 class TransactionAdmin(admin.ModelAdmin):
     model = Transaction
-    list_display = ['trx_hash', 'related_sender', 'related_recipient', 'sender_address', 'recipient_address', 'value', 'gas_used']
+    list_display = ['trx_hash', 'related_sender', 'related_recipient',
+                    'value', 'gas_used', 'sender_address', 'recipient_address']
     readonly_fields = ['related_sender', 'related_recipient']
 
 

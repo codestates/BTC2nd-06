@@ -1,12 +1,17 @@
 import os
 import sys
-from pathlib import Path
+import django
 import time
+
+from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(BASE_DIR))
 sys.path.append(str(BASE_DIR) + '/scanner_backend/')
 sys.path.append(str(BASE_DIR) + '/scanner_daemon/')
+os.environ['DJANGO_SETTINGS_MODULE'] = 'management.settings'
+os.environ['DJANGO_ALLOW_ASYNC_UNSAFE'] = 'true'
+django.setup()
 
 from web3_wrapper import *
 from scanner_backend.models import *
@@ -21,6 +26,7 @@ def simple_scanner_daemon():  # CA or EOA address
     address_list = []  # TODO DB의 모든 주소 데이터를 캐싱
 
     latest_block_number = get_latest_block_number()
+    print(f'latest block: {latest_block_number}')
     block_number_tracker = latest_block_number
 
     wallets = DerivedWallet.objects.all()
@@ -47,6 +53,7 @@ def simple_scanner_daemon():  # CA or EOA address
             block_number_tracker += 1
         except BlockNotFound:  # Block이 아직 생성되지 않은 경우
             print(f"Block #{block_number_tracker} is not yet created.")
+            time.sleep(0.1)
             continue
 
         # 새로운 최신 블록이 detect되면 7개 이전의 블록으로 검증
@@ -68,7 +75,7 @@ def simple_scanner_daemon():  # CA or EOA address
                     transaction.save()
                     print(f'Transaction {trx_data["hash"]} saved. Block Number: {confirmed_block_number}')
                     end = time.time()
-                    print(f'time elapsed: {start - end} secs.')
+                    print(f'time elapsed: {end - start} secs.')
                 elif trx_to == address:
                     print(f'trx detected in block #{confirmed_block_number}')
                     transaction = Transaction()
@@ -76,28 +83,10 @@ def simple_scanner_daemon():  # CA or EOA address
                     transaction.save()
                     print(f'Transaction {trx_data["hash"]} saved. Block Number: {confirmed_block_number}')
                     end = time.time()
-                    print(f'time elapsed: {start - end} secs.')
+                    print(f'time elapsed: {end - start} secs.')
                 else:
                     continue
         print(f'for loop DONE. Number of trxs: {len(trx_list)}\n')
 
 
-def transaction_confirm_scanner():
-    # TODO Confirmation depth 설정
-    trx_hash = input('트랜잭션 해시 입력: ')
-    block_marker = 0
-    while True:
-
-        latest_block_number = get_latest_block_number()  # TODO 마커로 마지막 스캔한 블록 저장해두고 그 다음 블록부터 스캔하는 로직
-        if block_marker != latest_block_number:
-            block_marker = latest_block_number
-            print(block_marker)
-            trx_list = get_transactions_from_block(block_marker, data_format='str')
-            if trx_hash in trx_list:
-                print(f'Transaction {trx_hash} Confirmed.')
-                print(f'Block Number: {block_marker}')
-                break
-            else:
-                print('not included:')
-                print(trx_list)
-                continue
+simple_scanner_daemon()
