@@ -1,4 +1,4 @@
-### How to run server
+### How to run this server
 
 ```
 cd wallet
