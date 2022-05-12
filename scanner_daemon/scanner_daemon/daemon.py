@@ -69,11 +69,10 @@ def simple_scanner_daemon():
                     _create_transaction_record(confirmed_block_number, trx_data, receipt,
                                                related_sender=address, related_recipient=None)
 
-                elif trx_to == address:
+                if trx_to == address:
                     _create_transaction_record(confirmed_block_number, trx_data, receipt,
                                                related_sender=None, related_recipient=address)
-                else:
-                    continue
+                continue
         print(f'for loop DONE. Number of trxs: {len(trx_list)}\n')
 
 
