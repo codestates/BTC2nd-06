@@ -1,60 +1,81 @@
+import os
+import sys
+import django
+import time
+
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+sys.path.append(str(BASE_DIR))
+sys.path.append(str(BASE_DIR) + '/scanner_backend/')
+sys.path.append(str(BASE_DIR) + '/scanner_daemon/')
+os.environ['DJANGO_SETTINGS_MODULE'] = 'management.settings'
+os.environ['DJANGO_ALLOW_ASYNC_UNSAFE'] = 'true'
+django.setup()
+
 from web3_wrapper import *
 from scanner_backend.models import *
 
 
-def simple_scanner_daemon(account_address):  # CA or EOA address
-    """
-    최근 생성된 블록에 특정 address가 포함된 트랜잭션이 있는지 검사
-    """
-    address_list = []
+def _create_transaction_record(confirmed_block_number, trx_data, receipt,
+                               related_sender=None, related_recipient=None):
+    print(f'trx detected in block #{confirmed_block_number}')
+    transaction = Transaction()
+    transaction.setup_data(trx_data, receipt, related_sender=related_sender, related_recipient=related_recipient)
+    transaction.save()
+    print(f'Transaction {trx_data["hash"]} saved. Block Number: {confirmed_block_number}')
 
-    wallets = DerivedWallet.objects.all()
-    for wallet in wallets:
-        address_list.append((wallet.id, wallet.address))  # DerivedWallet (id, address) tuple
+
+def simple_scanner_daemon():
+    """
+    최근 생성된 블록에 특정 address가 포함된 트랜잭션이 있는지 검사 후 Transaction 레코드를 DB에 저장 (+ DerivedAddress 객체와 연결)
+    """
+    confirm_depth = 5  # 최소 5개의 블록에 의해 confirm된 블록만 검사
+    # TODO DB에 새로운 지갑 주소가 추가되면 데몬을 재실행
 
     latest_block_number = get_latest_block_number()
+    print(f'latest block: {latest_block_number}')
+    block_number_tracker = latest_block_number
 
-    trx_list = get_transactions_from_block(latest_block_number, data_format='str')
+    wallets = DerivedWallet.objects.all()
+    address_list = [wallet.address for wallet in wallets]
 
-    for trx in trx_list:
-        trx_data = get_transaction(trx)
+    print('-------------------- daemon initiated --------------------')
 
-        trx_from = trx_data['from']
-        trx_to = trx_data['to']
-
-        # TODO 2중 for문 구조 개선
-        if trx_from in address_list:
-            idx = address_list.index(trx_from)
-            transaction = Transaction()
-            # transaction = Transaction(related_sender=)  # TODO Related Field 연결
-            transaction.setup_data()
-            transaction.save()  # TRX 추가
-            break
-
-        elif trx_to in address_list:
-            print('DONE')
-            break
-
-        else:
-            continue
-
-
-def transaction_confirm_scanner():
-    # TODO Confirmation depth 설정
-    trx_hash = input('트랜잭션 해시 입력: ')
-    block_marker = 0
+    # 놓치는 블록이 없도록 최신 블록 넘버를 최초 1회 받아온 후 블록 넘버를 +1씩 하며 블록에 포함된 트랜잭션 검사
     while True:
 
-        latest_block_number = get_latest_block_number()  # TODO 마커로 마지막 스캔한 블록 저장해두고 그 다음 블록부터 스캔하는 로직
-        if block_marker != latest_block_number:
-            block_marker = latest_block_number
-            print(block_marker)
-            trx_list = get_transactions_from_block(block_marker, data_format='str')
-            if trx_hash in trx_list:
-                print(f'Transaction {trx_hash} Confirmed.')
-                print(f'Block Number: {block_marker}')
-                break
-            else:
-                print('not included:')
-                print(trx_list)
-                continue
+        confirmed_block_number = block_number_tracker - confirm_depth
+        try:
+            trx_list = get_transactions_from_block(confirmed_block_number, data_format='str')
+            block_number_tracker += 1
+        except BlockNotFound:  # block_number_tracker에 해당하는 Block이 아직 생성되지 않은 경우
+            print(f"Block #{block_number_tracker} is not yet created.")
+            time.sleep(0.1)
+            continue
+
+        # 새로운 최신 블록이 detect되면 7개 이전의 블록으로 검증
+        print(f'confirmed: {confirmed_block_number}')
+        for trx in trx_list:  # 트랜잭션 리스트 순회
+            trx_data = get_transaction(trx, data_format='str')  # dictionary
+            receipt = get_transaction_receipt(trx, data_format='str')  # TODO HTTP 통신 및 Transaction.setup_data 비동기 처리
+
+            trx_from = trx_data['from']
+            trx_to = trx_data['to']
+
+            for address in address_list:  # 주소 리스트 순회
+                # print(f'value of address: {address}, type: {type(address)}')
+
+                if trx_from == address:
+                    _create_transaction_record(confirmed_block_number, trx_data, receipt,
+                                               related_sender=address, related_recipient=None)
+
+                elif trx_to == address:
+                    _create_transaction_record(confirmed_block_number, trx_data, receipt,
+                                               related_sender=None, related_recipient=address)
+                else:
+                    continue
+        print(f'for loop DONE. Number of trxs: {len(trx_list)}\n')
+
+
+simple_scanner_daemon()

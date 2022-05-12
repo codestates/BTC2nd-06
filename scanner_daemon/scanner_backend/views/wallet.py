@@ -31,7 +31,7 @@ class MasterWalletCreateView(APIView):
 
         data = request.data
 
-        username = data['user_id']
+        username = data['username']
         password = data['password']
         mnemonic_seed = data['mnemonic_seed']
         address_list = data['address_list']
@@ -45,8 +45,8 @@ class MasterWalletCreateView(APIView):
         registration_response = requests.post(registration_api_url, headers=headers, data=json.dumps(body_data))
         registration_response_dict = registration_response.json()
 
-        time.sleep(0.1)  # TODO Callback Function으로 전환
-
+        time.sleep(1)  # TODO Callback Function으로 전환
+        print(f"response dict user key: {registration_response_dict['user']}")
         user = User.objects.get(id=registration_response_dict['user']['pk'])
 
         # MasterWallet 객체 생성

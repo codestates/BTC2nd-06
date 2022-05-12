@@ -1,4 +1,5 @@
 from web3 import Web3
+from web3.exceptions import BlockNotFound
 from web3.datastructures import AttributeDict
 from web3.middleware import geth_poa_middleware
 from hexbytes import HexBytes
