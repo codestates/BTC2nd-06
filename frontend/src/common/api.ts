@@ -7,6 +7,7 @@ export async function createWallet(params: {
   const { data } = await api.wallet.post("/api/wallet", params);
   if (data.access_token) {
     localStorage.setItem("access_token", JSON.stringify(data.access_token));
+    localStorage.setItem("mnemonic_id", JSON.stringify(data.mnemonicId));
     api.deamon.setToken(data.access_token);
     return true;
   }
@@ -20,6 +21,7 @@ export async function setWalletLogin(params: {
   const { data } = await api.deamon.post("auth/login/", params);
   if (data.access_token) {
     localStorage.setItem("access_token", JSON.stringify(data.access_token));
+    localStorage.setItem("mnemonic_id", JSON.stringify(data.mnemonicId));
     api.deamon.setToken(data.access_token);
     return true;
   }

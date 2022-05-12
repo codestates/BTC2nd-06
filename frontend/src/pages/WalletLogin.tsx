@@ -30,9 +30,10 @@ function WalletLogin() {
     try {
       const { data } = await fetchSignin({ username: id, password });
       if (data) {
-        console.log("@@@@@@@@@@@", data);
+        goWalletPage();
+        return;
       }
-      goWalletPage();
+      throw new Error();
     } catch (error) {
       console.log(error);
       toast.warn(`회원가입 중 문제가 발생하였습니다. \n ${error}`);

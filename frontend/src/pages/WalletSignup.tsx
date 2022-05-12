@@ -41,6 +41,9 @@ function WalletSignup() {
   async function signup() {
     try {
       const res = await fetchSignup({ username: id, password });
+      if (!res) {
+        throw new Error();
+      }
       nextStep();
     } catch (error) {
       console.log(error);

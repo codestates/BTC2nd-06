@@ -37,7 +37,8 @@ function WalletHome() {
       <TopNav />
       <WalletHomeWrapper>
         {!isLoading ? (
-          <div>
+          <div className="top-wrapper">
+            내 지갑들
             <Form.Select aria-label="Default select example">
               {addresslist.map((e, idx) => (
                 <option key={`wallet-address-${idx}`} value="1">
@@ -46,7 +47,7 @@ function WalletHome() {
               ))}
             </Form.Select>
             <img
-              className="logo"
+              className="logo mt-10"
               src={`${process.env.PUBLIC_URL}/public_assets/bnb-logo.png`}
               alt="bnb"
             />
@@ -66,15 +67,24 @@ const WalletHomeWrapper = styled.div`
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  .logo {
-    display: inline-block;
-    width: 10rem;
-    height: 10rem;
-    background-color: gray;
+  .top-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+
+    .logo {
+      display: inline-block;
+      width: 10rem;
+      height: 10rem;
+      background-color: gray;
+      margin-top: 2rem;
+    }
+    .balance {
+      font-size: 2.2rem;
+    }
   }
-  .balance {
-    font-size: 2.2rem;
-  }
+
   .loading {
     position: fixed;
     top: calc(40% - 32px);
