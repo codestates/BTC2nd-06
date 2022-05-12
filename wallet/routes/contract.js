@@ -40,19 +40,16 @@ router.post("/contract/balanceOf", getWeb3, async (req, res) => {
 
 router.post("/contract/transfer", getWeb3, async (req, res) => {
   try {
-    const { fromAddr, toAddr, value, gas } = req.body;
+    const { fromAddr, toAddr, value, gas, gasPrice } = req.body;
     const web3 = req.web3;
     const contractInstance = simpletoken(web3);
-    const gasPrice = await web3.eth.getGasPrice();
     await contractInstance.methods
       .transfer(toAddr, value)
       .send({ gas, gasPrice, from: fromAddr });
     console.log(`Transfered ${value} token from ${fromAddr} to ${toAddr}`);
-    res
-      .status(200)
-      .json({
-        message: `Transfered ${value} token from ${fromAddr} to ${toAddr}`,
-      });
+    res.status(200).json({
+      message: `Transfered ${value} token from ${fromAddr} to ${toAddr}`,
+    });
   } catch (error) {
     console.log(error);
     res.status(404).json({ error: error.message });
