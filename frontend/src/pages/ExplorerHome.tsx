@@ -43,6 +43,7 @@ function ExplorerHome({ latestTxList, latestBlock }: ExplorerHomeProps) {
   function goToDetail(type: string, hx: string) {
     navigate(`/explorer?type=${type}&hx=${hx}`);
   }
+
   return (
     <PageWrapper>
       <TopNav></TopNav>

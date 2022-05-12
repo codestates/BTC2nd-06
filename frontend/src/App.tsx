@@ -4,7 +4,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import web3 from "./contracts/index";
 import ExplorerHome from "./pages/ExplorerHome";
 import ExplorerDetail from "./pages/ExplorerDetail";
+import WalletLogin from "./pages/WalletLogin";
+import WalletSignup from "./pages/WalletSignup";
+import WalletHome from "./pages/WalletHome";
 import { BlockInfo, Transaction } from "./interfaces";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
   const [latestBlock, setlatestBlock] = useState<BlockInfo[]>([]);
@@ -20,6 +25,7 @@ function App() {
     fetchLatestTx(lastBlockNum);
 
     setInterval(() => {
+      console.log("fetch data");
       fetchLatestBlock(lastBlockNum);
       fetchLatestTx(lastBlockNum);
     }, 15000);
@@ -65,7 +71,11 @@ function App() {
           }
         ></Route>
         <Route path="/explorer" element={<ExplorerDetail />} />
+        <Route path="/wallet" element={<WalletLogin />} />
+        <Route path="/wallet/signup" element={<WalletSignup />} />
+        <Route path="/wallet/my" element={<WalletHome />} />
       </Routes>
+      <ToastContainer theme={"dark"} autoClose={3000} />;
     </HashRouter>
   );
 }
