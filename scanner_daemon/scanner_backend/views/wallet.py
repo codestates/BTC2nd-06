@@ -5,20 +5,24 @@ import time
 
 # Django Core
 from django.contrib.auth.models import User
-from rest_framework.permissions import AllowAny
 
 # 서드 파티 라이브러리
+from rest_framework.permissions import AllowAny
+from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import serializers
+
 
 # 프로젝트 앱
 from scanner_backend.models import MasterWallet, DerivedWallet, Transaction
-from scanner_backend.serializers import MasterWalletSerializer, DerivedWalletSerializer
 
 
-# TODO Exception 처리
-# TODO form data validation
-# TODO serializer 도입
+class TransactionSimpleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = ['trx_hash', 'block_hash', 'block_number', 'value', 'gas_used',
+                  'sender_address', 'recipient_address']
 
 
 class MasterWalletCreateView(APIView):
@@ -31,10 +35,14 @@ class MasterWalletCreateView(APIView):
 
         data = request.data
 
-        username = data['username']
-        password = data['password']
-        mnemonic_seed = data['mnemonic_seed']
-        address_list = data['address_list']
+        try:
+            username = data['username']
+            password = data['password']
+            mnemonic_seed = data['mnemonic_seed']
+            mnemonic_id = data['mnemonicId']
+            address_list = data['address_list']
+        except KeyError:
+            return Response({"error_msg": "MasterWallet creation form data is invalid."}, status=status.HTTP_400_BAD_REQUEST)
 
         # 회원가입 진행
 
@@ -47,10 +55,13 @@ class MasterWalletCreateView(APIView):
 
         time.sleep(1)  # TODO Callback Function으로 전환
         print(f"response dict: {registration_response_dict}")
-        user = User.objects.get(id=registration_response_dict['user']['pk'])
+        try:
+            user = User.objects.get(id=registration_response_dict['user']['pk'])
+        except User.DoesNotExist:
+            return Response({"error_msg": "Registration form data is invalid."}, status=status.HTTP_400_BAD_REQUEST)
 
         # MasterWallet 객체 생성
-        master_wallet = MasterWallet(user=user, mnemonic_seed=mnemonic_seed)
+        master_wallet = MasterWallet(user=user, mnemonic_seed=mnemonic_seed, mnemonic_id=mnemonic_id)
         master_wallet.save()
 
         # DerivedWallet 객체 10개 생성
@@ -68,9 +79,13 @@ class MasterWalletRetrieveView(APIView):
     """
     def get(self, request):
         user = request.user
+        try:
+            master_wallet = MasterWallet.objects.get(user=user)
+        except MasterWallet.DoesNotExist:
+            return Response({"error_msg": "The user has no MasterWallet object."}, status=status.HTTP_400_BAD_REQUEST)
 
-        master_wallet = MasterWallet.objects.get(user=user)
         mnemonic_seed = master_wallet.mnemonic_seed
+        mnemonic_id = master_wallet.mnemonic_id
 
         address_list = []
 
@@ -80,6 +95,7 @@ class MasterWalletRetrieveView(APIView):
 
         data = {
             'mnemonic_seed': mnemonic_seed,
+            'mnemonic_id': mnemonic_id,
             'address_list': address_list
         }
 
@@ -96,16 +112,18 @@ class DerivedWalletRetrieveView(APIView):
         try:
             derived_wallet = DerivedWallet.objects.get(address=address)
         except DerivedWallet.DoesNotExist:
-            raise Exception
+            return Response({"error_msg": "No such DerivedWallet object."}, status=status.HTTP_400_BAD_REQUEST)
 
-        trx_hash_list = []
-        transactions = derived_wallet.transaction_set
-        for transaction in transactions:
-            trx_hash_list.append(transaction.trx_hash)
+        sent_transactions = Transaction.objects.filter(related_sender=derived_wallet)
+        received_transactions = Transaction.objects.filter(related_recipient=derived_wallet)
 
-        # TODO 리턴 데이터 더 상세하게
-        data = {
-            'transaction_list': trx_hash_list
-        }
+        queryset = sent_transactions | received_transactions
+        queryset = queryset.order_by('-created_at')
 
-        return Response(data)
+        serializer = TransactionSimpleSerializer(queryset, many=True)
+
+        return Response(
+            {
+                "transactions": serializer.data
+            }
+        )

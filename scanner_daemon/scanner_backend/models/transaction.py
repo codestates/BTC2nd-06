@@ -4,6 +4,7 @@ import uuid
 # Django Core
 from django.db import models
 from django.core.validators import MinLengthValidator
+from django.utils import timezone
 
 # Project
 from .derived_wallet import DerivedWallet
@@ -30,6 +31,8 @@ class Transaction(models.Model):
 
     transaction_payload = models.TextField()  # JSON format string
 
+    create_at = models.DateTimeField(default=timezone.localtime)
+
     def __str__(self):
         return self.trx_hash
 
@@ -38,7 +41,10 @@ class Transaction(models.Model):
         self.trx_hash = trx_data['hash']
         self.block_hash = trx_data['blockHash']
         self.block_number = trx_data['blockNumber']
-        self.value = trx_data['value']
+        if related_sender:
+            self.value = -1 * trx_data['value']
+        elif related_recipient:
+            self.value = trx_data['value']
         self.gas_used = receipt['gasUsed']
         self.sender_address = trx_data['from']
         self.recipient_address = trx_data['to']
