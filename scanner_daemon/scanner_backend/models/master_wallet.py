@@ -16,7 +16,7 @@ class MasterWallet(models.Model):
     mnemonic_seed = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return self.user  # TODO 회원가입 부분
+        return str(self.user.username)  # TODO 회원가입 부분
 
     # def set_mnemonic_seed(self):
     #     self.mnemonic_seed = generate_mnemonic()
