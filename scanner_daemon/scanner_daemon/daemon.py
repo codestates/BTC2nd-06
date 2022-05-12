@@ -43,11 +43,11 @@ def simple_scanner_daemon():
 
         confirmed_block_number = block_number_tracker - confirm_depth
 
-        trx_list = get_transactions_from_block(confirmed_block_number, data_format='str')
-
-        if not trx_list:  # block_tracker가 너무 빨라 아직 최신 블록이 생성되지 않은 경우
+        try:
+            trx_list = get_transactions_from_block(confirmed_block_number, data_format='str')
+        except BlockNotFound:
             print(f"Block #{block_number_tracker} is not yet created.")
-            time.sleep(0.1)
+            time.sleep(1)
             continue  # while문의 시작점으로
 
         wallets = DerivedWallet.objects.all()  # 지갑 주소 불러오기
@@ -57,14 +57,19 @@ def simple_scanner_daemon():
         print(f'confirmed: {confirmed_block_number}')
 
         for trx in trx_list:  # 트랜잭션 리스트 순회  # TODO 멀티프로세싱
-            trx_data = get_transaction(trx, data_format='str')  # dictionary
-            if not trx_data:
-                print('trx_data is None')
-                continue
-            receipt = get_transaction_receipt(trx, data_format='str')  # TODO Transaction.setup_data 비동기 처리
-            if receipt is None:
-                print('receipt is None')
-                continue
+            try:
+                trx_data = get_transaction(trx, data_format='str')  # dictionary
+            except TransactionNotFound:
+                print('Transaction Not Found.')
+                block_number_tracker -= 1  # 미리 빼주기
+                break
+
+            try:
+                receipt = get_transaction_receipt(trx, data_format='str')  # TODO Transaction.setup_data 비동기 처리
+            except TransactionNotFound:
+                print('Transaction Receipt Not Found.')
+                block_number_tracker -= 1
+                break
 
             trx_from = trx_data['from']
             trx_to = trx_data['to']
