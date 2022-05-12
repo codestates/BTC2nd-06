@@ -14,6 +14,8 @@ function WalletSignup() {
   const [signupStep, setSginupStep] = useState<number>(0);
   const [id, setId] = useState("");
   const [, fetchSignup, isLoading] = useFetch(createWallet);
+  const [isShowMnemonic, setIsShowMnemonic] = useState(false);
+  const [mnemonic, setMnemonic] = useState("");
 
   const navigate = useNavigate();
 
@@ -44,6 +46,7 @@ function WalletSignup() {
       if (!res) {
         throw new Error();
       }
+      setMnemonic(res.data.mnemonic);
       nextStep();
     } catch (error) {
       console.log(error);
@@ -109,8 +112,13 @@ function WalletSignup() {
         {signupStep === 2 && (
           <div className="step-3">
             <pre className="warning-text">{warning}</pre>
-            <div className="mnemonic">
-              <p>동의하고 보기</p>
+            <div
+              className="mnemonic"
+              onClick={() => {
+                setIsShowMnemonic(!isShowMnemonic);
+              }}
+            >
+              {!isShowMnemonic ? <p>동의하고 보기</p> : <p>{mnemonic}</p>}
             </div>
             <Button
               className="sid-gen-button"

@@ -9,9 +9,9 @@ export async function createWallet(params: {
     localStorage.setItem("access_token", JSON.stringify(data.access_token));
     localStorage.setItem("mnemonic_id", JSON.stringify(data.mnemonicId));
     api.deamon.setToken(data.access_token);
-    return true;
+    return data;
   }
-  return false;
+  throw new Error();
 }
 
 export async function setWalletLogin(params: {
