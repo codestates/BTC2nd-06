@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import { BlockInfo, Transaction } from "../interfaces";
-import { Form, Button } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Form } from "react-bootstrap";
 import styled from "styled-components";
 import TopNav from "../components/TopNav";
-import web3 from "../contracts/index";
 import { toast } from "react-toastify";
 import { getMasterWalletInfo } from "../common/api";
-
+import ReactLoading from "react-loading";
 import PageWrapper from "./page.styled";
-import theme from "../theme";
+import { useFetch } from "../common/fetchHook";
 
 function WalletHome() {
   const [balance, setBalance] = useState();
   const [targetAddress, setTargetAddress] = useState();
+  const [addresslist, setAddresslist] = useState([]);
+  const [, fetchWallet, isLoading] = useFetch(getMasterWalletInfo);
+
   useEffect(() => {
     (async () => {
       await getWalletInfo();
@@ -22,9 +22,9 @@ function WalletHome() {
 
   async function getWalletInfo() {
     try {
-      const { data } = await getMasterWalletInfo();
+      const { data } = await fetchWallet();
       if (data) {
-        console.log("!!!!!!", data);
+        setAddresslist(data.address_list);
       }
     } catch (error) {
       console.log(error);
@@ -32,21 +32,29 @@ function WalletHome() {
     }
   }
 
-  async function signup() {}
   return (
     <PageWrapper>
       <TopNav />
       <WalletHomeWrapper>
-        <div>
-          <Form.Select aria-label="Default select example">
-            <option>Open this select menu</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
-          </Form.Select>
-          <div className="logo"></div>
-          <div className="balance"> BnB</div>
-        </div>
+        {!isLoading ? (
+          <div>
+            <Form.Select aria-label="Default select example">
+              {addresslist.map((e, idx) => (
+                <option key={`wallet-address-${idx}`} value="1">
+                  {e}
+                </option>
+              ))}
+            </Form.Select>
+            <img
+              className="logo"
+              src={`${process.env.PUBLIC_URL}/public_assets/bnb-logo.png`}
+              alt="bnb"
+            />
+            <div className="balance"> BnB</div>
+          </div>
+        ) : (
+          <ReactLoading className="loading" type="spin" />
+        )}
       </WalletHomeWrapper>
     </PageWrapper>
   );
@@ -66,6 +74,11 @@ const WalletHomeWrapper = styled.div`
   }
   .balance {
     font-size: 2.2rem;
+  }
+  .loading {
+    position: fixed;
+    top: calc(40% - 32px);
+    left: calc(50% - 32px);
   }
 `;
 

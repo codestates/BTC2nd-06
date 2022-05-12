@@ -5,20 +5,39 @@ import styled from "styled-components";
 import TopNav from "../components/TopNav";
 import PageWrapper from "./page.styled";
 import { toast } from "react-toastify";
-import { createWallet } from "../common/api";
+import { setWalletLogin } from "../common/api";
+import ReactLoading from "react-loading";
+import { useFetch } from "../common/fetchHook";
 import theme from "../theme";
 
 function WalletLogin() {
   const [id, setId] = useState("");
   const [password, setPassword] = useState("");
+  const [, fetchSignin, isLoading] = useFetch(setWalletLogin);
   const navigate = useNavigate();
 
   function goSingupPage() {
     navigate(`/wallet/signup`);
   }
+  function goWalletPage() {
+    navigate(`/wallet/my`);
+  }
 
   useEffect(() => {}, []);
   const notify = () => toast.warn("Wow so easy!");
+
+  async function signup() {
+    try {
+      const { data } = await fetchSignin({ username: id, password });
+      if (data) {
+        console.log("@@@@@@@@@@@", data);
+      }
+      goWalletPage();
+    } catch (error) {
+      console.log(error);
+      toast.warn(`회원가입 중 문제가 발생하였습니다. \n ${error}`);
+    }
+  }
 
   async function login() {
     // const data = await createWallet();
@@ -57,7 +76,7 @@ function WalletLogin() {
               }}
               placeholder="enter your password"
             />
-            <Button className="form" variant="warning">
+            <Button className="form" variant="warning" onClick={signup}>
               Login
             </Button>
           </Form.Group>
@@ -68,6 +87,7 @@ function WalletLogin() {
             지갑 생성하기
           </div>
         </div>
+        {isLoading && <ReactLoading className="loading" type="spin" />}
       </WalletMainWrapper>
     </PageWrapper>
   );

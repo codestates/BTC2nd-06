@@ -5,9 +5,20 @@ export async function createWallet(params: {
   password: string;
 }) {
   const { data } = await api.wallet.post("/api/wallet", params);
-  console.log("@@@@@@@@", data);
   if (data.access_token) {
-    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!", data.access_tokens);
+    localStorage.setItem("access_token", JSON.stringify(data.access_token));
+    api.deamon.setToken(data.access_token);
+    return true;
+  }
+  return false;
+}
+
+export async function setWalletLogin(params: {
+  username: string;
+  password: string;
+}) {
+  const { data } = await api.deamon.post("auth/login/", params);
+  if (data.access_token) {
     localStorage.setItem("access_token", JSON.stringify(data.access_token));
     api.deamon.setToken(data.access_token);
     return true;
@@ -25,4 +36,11 @@ export async function getSlaveWalletInfo({
   addresse: string;
 }) {
   return await api.deamon.get("wallet/derived/", { target });
+}
+
+export async function getBalance(params: {
+  address: string;
+  mnemonicId: string;
+}) {
+  return await api.wallet.get("/wallet/address/balance", params);
 }

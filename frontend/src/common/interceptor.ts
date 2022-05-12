@@ -20,7 +20,7 @@ class Service {
 
   setToken(token: string) {
     this.instance.defaults.headers.common = {
-      Authorization: `bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     };
   }
 

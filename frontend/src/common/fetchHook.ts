@@ -1,12 +1,8 @@
 import { useState } from "react";
 
-interface State {
-  data: undefined;
-  error: undefined;
-  isLoading: boolean;
-}
-
-export const useFetch = (apiFunc: Function) => {
+export const useFetch = (
+  apiFunc: Function
+): [string | undefined, Function, boolean | undefined, string | undefined] => {
   const [state, setState] = useState({
     data: undefined,
     error: undefined,
@@ -14,7 +10,7 @@ export const useFetch = (apiFunc: Function) => {
   });
 
   const fetch = async (params = {}) => {
-    let newState: State = {
+    let newState = {
       data: undefined,
       error: undefined,
       isLoading: false,

@@ -6,13 +6,17 @@ import TopNav from "../components/TopNav";
 import PageWrapper from "./page.styled";
 import { toast } from "react-toastify";
 import { createWallet } from "../common/api";
-
+import ReactLoading from "react-loading";
+import { useFetch } from "../common/fetchHook";
 import theme from "../theme";
 
 function WalletSignup() {
   const [signupStep, setSginupStep] = useState<number>(0);
   const [id, setId] = useState("");
+  const [, fetchSignup, isLoading] = useFetch(createWallet);
+
   const navigate = useNavigate();
+
   const [password, setPassword] = useState("");
   const warning =
     "경고: 이 키를 노출하지 마세요. \n 비공개 키가 있는 사람이라면 누구든 \n 귀하의 계정에 있는 자산을 훔칠 수 있습니다.";
@@ -36,10 +40,7 @@ function WalletSignup() {
   }
   async function signup() {
     try {
-      const res = await createWallet({ username: id, password });
-      if (res) {
-        console.log(localStorage.getItem("access_token"));
-      }
+      const res = await fetchSignup({ username: id, password });
       nextStep();
     } catch (error) {
       console.log(error);
@@ -117,6 +118,7 @@ function WalletSignup() {
             </Button>
           </div>
         )}
+        {isLoading && <ReactLoading className="loading" type="spin" />}
       </WalletSignuoWrapper>
     </PageWrapper>
   );
@@ -126,6 +128,11 @@ const WalletSignuoWrapper = styled.div`
   width: 100%;
   height: 100%;
   position: relative;
+  .loading {
+    position: fixed;
+    top: calc(40% - 32px);
+    left: calc(50% - 32px);
+  }
   .description {
     margin-top: 6rem;
     font-size: 2rem;
