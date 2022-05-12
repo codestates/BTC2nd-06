@@ -41,12 +41,20 @@ export async function getSlaveWalletInfo({
   return await api.deamon.get("wallet/derived/", { target });
 }
 
-export async function getBalance({ address }: { address: string }) {
-  const m_id = localStorage.getItem("mnemonic_id")!.replace(/\"/gi, "");
+export async function getBalance() {
+  // const m_id = localStorage.getItem("mnemonic_id")!.replace(/\"/gi, "");
+  return await api.wallet.get("/wallet/address/balance", {
+    mnemonicId: '5d0566e0-d204-11ec-97d6-516958c55216"',
+    address: "0x6A840381c14495201Dc0587a6e6584EfdAAB3D90",
+  });
+}
+
+export async function getGasInfo() {
   const params = {
-    address: address,
-    mnemonicId: m_id,
+    mnemonicId: "5d0566e0-d204-11ec-97d6-516958c55216",
+    fromAddr: "0x6A840381c14495201Dc0587a6e6584EfdAAB3D90",
+    toAddr: "0x6A840381c14495201Dc0587a6e6584EfdAAB3D90",
+    valueBNB: "00000000000001",
   };
-  console.log("@@@", params);
-  return await api.wallet.get("/wallet/address/balance", params);
+  return await api.wallet.get("/api/transaction/gas", params);
 }

@@ -5,7 +5,7 @@ import styled from "styled-components";
 import TopNav from "../components/TopNav";
 import PageWrapper from "./page.styled";
 import { toast } from "react-toastify";
-import { setWalletLogin } from "../common/api";
+import { setWalletLogin, getGasInfo, getBalance } from "../common/api";
 import ReactLoading from "react-loading";
 import { useFetch } from "../common/fetchHook";
 import theme from "../theme";
@@ -24,7 +24,11 @@ function WalletLogin() {
   }
 
   useEffect(() => {}, []);
-  const notify = () => toast.warn("Wow so easy!");
+  const notify = async () => {
+    console.log(await getBalance());
+    console.log(await getGasInfo());
+    //
+  };
 
   async function signup() {
     try {
