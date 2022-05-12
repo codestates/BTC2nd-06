@@ -111,7 +111,16 @@ class DerivedWalletRetrieveView(APIView):
         except DerivedWallet.DoesNotExist:
             return Response({"error_msg": "No such DerivedWallet object."}, status=status.HTTP_400_BAD_REQUEST)
 
-        transactions = derived_wallet.transaction_set
-        serializer = TransactionSimpleSerializer(transactions, many=True)
+        sent_transactions = Transaction.objects.filter(related_sender=derived_wallet)
+        received_transactions = Transaction.objects.filter(related_recipient=derived_wallet)
 
-        return Response(serializer.data)
+        queryset = sent_transactions | received_transactions
+        queryset = queryset.order_by('-created_at')
+
+        serializer = TransactionSimpleSerializer(queryset, many=True)
+
+        return Response(
+            {
+                "transactions": serializer.data
+            }
+        )
