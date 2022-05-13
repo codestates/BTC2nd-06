@@ -76,3 +76,28 @@ export async function getTTSBalance({ address }: { address: string }) {
     tokenAccount: address,
   });
 }
+
+export async function getGas({
+  toAddr,
+  fromAddr,
+  valueBNB,
+}: {
+  toAddr: string;
+  fromAddr: string;
+  valueBNB: string;
+  address: string;
+}) {
+  const mid = localStorage.getItem("mnemonic_id")!.replace(/\"/gi, "");
+  return await api.wallet.post("/api/transaction/gas", {
+    mnemonicId: mid,
+    toAddr,
+    fromAddr,
+    valueBNB,
+  });
+}
+export async function getGasPrice() {
+  const mid = localStorage.getItem("mnemonic_id")!.replace(/\"/gi, "");
+  return await api.wallet.post("/api/transaction/gasprice", {
+    mnemonicId: mid,
+  });
+}

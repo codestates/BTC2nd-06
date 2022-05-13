@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { Form, Button, Table } from "react-bootstrap";
 import styled from "styled-components";
 import TopNav from "../components/TopNav";
@@ -8,6 +8,8 @@ import {
   getBalance,
   getTTSBalance,
   getSlaveWalletInfo,
+  getGas,
+  getGasPrice,
 } from "../common/api";
 import { useNavigate } from "react-router-dom";
 import ReactLoading from "react-loading";
@@ -32,7 +34,7 @@ function WalletHome() {
     toAddress: "",
     amount: 0,
     gas: 0,
-    gasLimit: 0,
+    gasPrice: 0,
   });
 
   const [token, setToken] = useState("BNB");
@@ -47,6 +49,14 @@ function WalletHome() {
 
   function goLogPage() {
     navigate(`/wallet/log`);
+  }
+  function onChangeTransferForm(e: ChangeEvent, type: string) {
+    const target = e.target as HTMLInputElement;
+    setTransferData({
+      ...transferData,
+      [type]: target.value,
+    });
+    console.log(transferData);
   }
 
   function openTransferModal(token: string) {
@@ -82,6 +92,16 @@ function WalletHome() {
         setBalance(balance);
         setTTSbalance(TTSbal);
       }
+    } catch (error) {
+      console.log(error);
+      toast.warn(`회원가입 중 문제가 발생하였습니다. \n ${error}`);
+    }
+  }
+
+  async function getGasInfo() {
+    try {
+      const { data } = await getGasPrice();
+      console.log("@@", data);
     } catch (error) {
       console.log(error);
       toast.warn(`회원가입 중 문제가 발생하였습니다. \n ${error}`);
@@ -157,9 +177,7 @@ function WalletHome() {
         )}
         <Modal
           isOpen={modalIsOpen}
-          onAfterOpen={() => {
-            console.log();
-          }}
+          onAfterOpen={getGasInfo}
           style={{
             overlay: {
               position: "fixed",
@@ -214,6 +232,7 @@ function WalletHome() {
               className="form"
               type="text"
               name="address"
+              value={transferData.toAddress}
               onChange={(e) => {
                 setToAddress(e.target.value);
               }}
@@ -233,8 +252,9 @@ function WalletHome() {
 
             <Form.Control
               className="form center"
-              type="text"
+              type="number"
               name="value"
+              value={transferData.amount}
               onChange={(e) => {
                 setToAddress(e.target.value);
               }}
@@ -250,38 +270,27 @@ function WalletHome() {
 
           <ModalStyle>
             <div className="gas-price">
-              <p className="title"> Gas Price</p>
+              <p className="title"> Gas</p>
               <Form.Control
                 className="form center"
                 type="text"
+                value={transferData.gas}
                 name="value"
                 onChange={(e) => {
-                  setToAddress(e.target.value);
+                  onChangeTransferForm(e, "gas");
                 }}
                 placeholder="enter your password"
               />
             </div>
             <div className="gas-price">
-              <p className="title">Gas-limit</p>
+              <p className="title">Gas Price</p>
               <Form.Control
                 className="form center"
                 type="text"
                 name="value"
+                value={transferData.gasPrice}
                 onChange={(e) => {
-                  setToAddress(e.target.value);
-                }}
-                placeholder="enter your password"
-              />
-            </div>
-            <div className="gas-price">
-              <p className="title">fee</p>
-              <Form.Control
-                disabled
-                className="form center"
-                type="text"
-                name="value"
-                onChange={(e) => {
-                  setToAddress(e.target.value);
+                  onChangeTransferForm(e, "gasPrice");
                 }}
                 placeholder="enter your password"
               />
