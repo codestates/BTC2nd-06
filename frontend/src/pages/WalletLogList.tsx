@@ -36,7 +36,7 @@ function WalletLogList() {
 
   return (
     <PageWrapper>
-      <TopNav></TopNav>
+      <TopNav title={"Wallet"}></TopNav>
       <WalletLogListWrapper>
         <div className="title-addr mb-2">거래 기록</div>
         <div className="title-addr mb-4">{targetAddr}</div>

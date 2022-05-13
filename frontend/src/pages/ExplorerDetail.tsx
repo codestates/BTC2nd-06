@@ -77,7 +77,7 @@ function ExplorerDetail() {
   return (
     <PageWrapper>
       <DetailWrapper>
-        <TopNav />
+        <TopNav title={"Explorer"}/>
         <div className="detail-title">
           {infoType === "block" ? (
             <span>Block Info</span>

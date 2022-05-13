@@ -153,7 +153,7 @@ function WalletHome() {
 
   return (
     <PageWrapper>
-      <TopNav />
+      <TopNav title={"Wallet"} />
       <WalletHomeWrapper>
         <div className="top-wrapper">
           Others Wallets
