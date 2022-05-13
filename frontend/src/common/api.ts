@@ -70,13 +70,13 @@ export async function sendToken({
   gasPrice,
 }: any) {
   const mid = localStorage.getItem("mnemonic_id")!.replace(/\"/gi, "");
-  return await api.wallet.post("/contract/transfer", {
+  return await api.wallet.post("/api/contract/transfer", {
     mnemonicId: mid,
     fromAddr: fromAddress,
     toAddr: toAddress,
     value: Number(amount),
-    gasPrice: Number(gasPrice),
     gas: gas,
+    gasPrice,
   });
 }
 
