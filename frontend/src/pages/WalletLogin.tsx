@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import styled from "styled-components";
 import TopNav from "../components/TopNav";
-import PageWrapper , {} from "./page.styled";
+import PageWrapper from "./page.styled";
 import { toast } from "react-toastify";
 import { setWalletLogin } from "../common/api";
 import ReactLoading from "react-loading";
@@ -23,13 +23,6 @@ function WalletLogin() {
     navigate(`/wallet/my`);
   }
 
-  // useEffect(() => {}, []);
-  // const notify = async () => {
-  //   console.log(await sendTransaction());
-  //   // console.log(await getGasInfo());
-  //   //
-  // };
-
   async function signup() {
     try {
       const { data } = await fetchSignin({ username: id, password });
@@ -44,14 +37,9 @@ function WalletLogin() {
     }
   }
 
-  async function login() {
-    // const data = await createWallet();
-    // console.log(data);
-  }
-
   return (
     <PageWrapper>
-      <TopNav />
+      <TopNav title={"Wallet"} />
       <WalletMainWrapper>
         <div className="title-box">
           <div className="sub-title">Wallet</div>

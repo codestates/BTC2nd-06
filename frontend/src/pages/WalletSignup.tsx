@@ -59,7 +59,7 @@ function WalletSignup() {
 
   return (
     <PageWrapper>
-      <TopNav />
+      <TopNav title={"Wallet"} />
       <WalletSignuoWrapper>
         <pre className="description">{stepDescription[signupStep]}</pre>
         {signupStep === 0 && (

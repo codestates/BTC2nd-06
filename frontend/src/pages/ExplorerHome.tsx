@@ -46,7 +46,7 @@ function ExplorerHome({ latestTxList, latestBlock }: ExplorerHomeProps) {
 
   return (
     <PageWrapper>
-      <TopNav></TopNav>
+      <TopNav title={"Explorer"}></TopNav>
       <Form>
         <Form.Group as={Row} className="mb-3" controlId="formPlaintextPassword">
           <Col className="search-form">
