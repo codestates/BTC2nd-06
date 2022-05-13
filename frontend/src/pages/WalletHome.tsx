@@ -295,7 +295,7 @@ function WalletHome() {
 
             <Form.Control
               className="form center"
-              type="text"
+              type="number"
               name="value"
               value={transferData.amount}
               onChange={(e) => {
