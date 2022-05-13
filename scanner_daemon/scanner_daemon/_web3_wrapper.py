@@ -79,46 +79,22 @@ def get_latest_block_number():
 
 
 def get_block_header(block_identifier, data_format='hexbytes'):
-    try:
-        block = dict(web3.eth.get_block(block_identifier))
-    except BlockNotFound:
-        return None
+    block = dict(web3.eth.get_block(block_identifier))
     block_header = _dict_without_keys(block, ['transactions'])
-
     return _select_data_format(block_header, data_format)
 
 
 def get_transactions_from_block(block_identifier, data_format='hexbytes'):
-    try:
-        block = dict(web3.eth.get_block(block_identifier))
-    except BlockNotFound:
-        return None
+    block = dict(web3.eth.get_block(block_identifier))
     transactions = block['transactions']
-
     return _select_data_format(transactions, data_format)
 
 
-def get_block(block_identifier, data_format='hexbytes'):  # block header + transactions
-    try:
-        block = dict(web3.eth.get_block(block_identifier))
-    except BlockNotFound:
-        return None
-
-    return _select_data_format(block, data_format)
-
-
 def get_transaction(trx_hash, data_format='hexbytes'):
-    try:
-        transaction = dict(web3.eth.get_transaction(trx_hash))
-    except TransactionNotFound:
-        return None
-
+    transaction = dict(web3.eth.get_transaction(trx_hash))
     return _select_data_format(transaction, data_format)
 
 
 def get_transaction_receipt(trx_hash, data_format='hexbytes'):
-    try:
-        receipt = dict(web3.eth.get_transaction_receipt(trx_hash))
-    except TransactionNotFound:
-        return None
+    receipt = dict(web3.eth.get_transaction_receipt(trx_hash))
     return _select_data_format(receipt, data_format)

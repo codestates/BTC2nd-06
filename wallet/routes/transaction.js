@@ -35,8 +35,17 @@ router.get("/transaction/gas", getWeb3, async (req, res) => {
       from: fromAddr,
       value: valueBNB * 1.0e18,
     });
+    res.status(200).json({ gas });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ error: error.message });
+  }
+});
+router.get("/transaction/gasprice", getWeb3, async (req, res) => {
+  const web3 = req.web3;
+  try {
     const gasPrice = await web3.eth.getGasPrice();
-    res.status(200).json({ gasPrice, gas });
+    res.status(200).json({ gasPrice });
   } catch (error) {
     console.log(error);
     res.status(404).json({ error: error.message });
