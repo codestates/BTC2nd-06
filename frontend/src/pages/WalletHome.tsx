@@ -49,7 +49,7 @@ function WalletHome() {
   }, []);
 
   function goLogPage() {
-    navigate(`/wallet/log`);
+    navigate(`/wallet/log?addr=${addresslist[targetAddress]}`);
   }
   function onChangeTransferForm(e: ChangeEvent, type: string) {
     const target = e.target as HTMLInputElement;
@@ -87,10 +87,9 @@ function WalletHome() {
         address,
       });
       const { data: TTSbalance } = await getTTSBalance({ address });
-      console.log(await getSlaveWalletInfo({ address }));
       if (data && TTSbalance) {
         const balance = await web3.utils.fromWei(data.balance, "ether");
-        const TTSbal = await web3.utils.fromWei(TTSbalance.balance, "ether");
+        const TTSbal = TTSbalance.balance;
         setBalance(balance);
         setTTSbalance(TTSbal);
       }
@@ -206,9 +205,6 @@ function WalletHome() {
                       onClick={() => openTransferModal("TTS")}
                     >
                       전송
-                    </Button>
-                    <Button variant="warning" onClick={goLogPage}>
-                      기록
                     </Button>
                   </div>
                 </TableData>
