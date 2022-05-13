@@ -45,23 +45,38 @@ export async function getBalance({ address }: { address: string }) {
   });
 }
 
-export async function getGasInfo() {
-  return await api.wallet.get("/api/transaction/gas", {
-    mnemonicId: "5d0566e0-d204-11ec-97d6-516958c55216",
-    fromAddr: "0xBf6Cf485E146796c73064690882d4d238e20A969",
-    toAddr: "0x6A840381c14495201Dc0587a6e6584EfdAAB3D90",
-    valueBNB: 0.1,
+export async function sendCoin({
+  fromAddress,
+  toAddress,
+  amount,
+  gas,
+  gasPrice,
+}: any) {
+  const mid = localStorage.getItem("mnemonic_id")!.replace(/\"/gi, "");
+  return await api.wallet.post("/api/transaction", {
+    mnemonicId: mid,
+    fromAddr: fromAddress,
+    toAddr: toAddress,
+    valueBNB: Number(amount),
+    gasPrice: Number(gasPrice),
+    gas: gas,
   });
 }
-
-export async function sendTransaction() {
-  return await api.wallet.post("/api/transaction", {
-    mnemonicId: "5d0566e0-d204-11ec-97d6-516958c55216",
-    fromAddr: "0x37328309dc63ECD53FfF78BDD868E89051D174f4",
-    toAddr: "0x6A840381c14495201Dc0587a6e6584EfdAAB3D90",
-    valueBNB: 0,
-    gasPrice: "10000000000",
-    gas: 21000,
+export async function sendToken({
+  fromAddress,
+  toAddress,
+  amount,
+  gas,
+  gasPrice,
+}: any) {
+  const mid = localStorage.getItem("mnemonic_id")!.replace(/\"/gi, "");
+  return await api.wallet.post("/contract/transfer", {
+    mnemonicId: mid,
+    fromAddr: fromAddress,
+    toAddr: toAddress,
+    value: Number(amount),
+    gasPrice: Number(gasPrice),
+    gas: gas,
   });
 }
 
@@ -84,11 +99,10 @@ export async function getGas({
 }: {
   toAddr: string;
   fromAddr: string;
-  valueBNB: string;
-  address: string;
+  valueBNB: number;
 }) {
   const mid = localStorage.getItem("mnemonic_id")!.replace(/\"/gi, "");
-  return await api.wallet.post("/api/transaction/gas", {
+  return await api.wallet.get("/api/transaction/gas", {
     mnemonicId: mid,
     toAddr,
     fromAddr,
@@ -97,7 +111,7 @@ export async function getGas({
 }
 export async function getGasPrice() {
   const mid = localStorage.getItem("mnemonic_id")!.replace(/\"/gi, "");
-  return await api.wallet.post("/api/transaction/gasprice", {
+  return await api.wallet.get("/api/transaction/gasprice", {
     mnemonicId: mid,
   });
 }

@@ -10,6 +10,8 @@ import {
   getSlaveWalletInfo,
   getGas,
   getGasPrice,
+  sendCoin,
+  sendToken,
 } from "../common/api";
 import { useNavigate } from "react-router-dom";
 import ReactLoading from "react-loading";
@@ -29,7 +31,6 @@ function WalletHome() {
   const [, fetchWallet, isLoading] = useFetch(getMasterWalletInfo);
   const [, fetchBalance, isBalanceLoading] = useFetch(getBalance);
   const [modalIsOpen, setIsOpen] = useState(false);
-  const [toAddress, setToAddress] = useState("");
   const [transferData, setTransferData] = useState({
     toAddress: "",
     amount: 0,
@@ -63,8 +64,9 @@ function WalletHome() {
     setToken(token);
     setIsOpen(true);
   }
-  function closeTransferModal() {
+  async function closeTransferModal() {
     setIsOpen(false);
+    await getWalletBalance(addresslist[targetAddress]);
   }
 
   async function getWalletInfo() {
@@ -98,13 +100,55 @@ function WalletHome() {
     }
   }
 
-  async function getGasInfo() {
+  async function getGasPriceInfo() {
     try {
       const { data } = await getGasPrice();
-      console.log("@@", data);
+      setTransferData({ ...transferData, gasPrice: data.gasPrice });
     } catch (error) {
       console.log(error);
-      toast.warn(`회원가입 중 문제가 발생하였습니다. \n ${error}`);
+      toast.warn(`가스를 불러오는 도중 문제가 발생하였습니다. \n ${error}`);
+    }
+  }
+
+  async function getGasinfo(address: string) {
+    try {
+      const { data } = await getGas({
+        toAddr: address,
+        fromAddr: addresslist[targetAddress],
+        valueBNB: transferData.amount,
+      });
+
+      setTransferData({ ...transferData, toAddress: address, gas: data.gas });
+    } catch (error) {
+      console.log(error);
+      toast.warn(`가스를 불러오는 도중 문제가 발생하였습니다. \n ${error}`);
+    }
+  }
+
+  async function send(token: string) {
+    try {
+      toast.warn("전송 중 입니다.");
+      let res;
+      if (token === "BNB") {
+        await sendCoin({
+          fromAddress: addresslist[targetAddress],
+          toAddress: transferData.toAddress,
+          amount: transferData.amount,
+          gas: transferData.gas,
+          gasPrice: transferData.gasPrice,
+        });
+      } else {
+        await sendToken({
+          fromAddress: addresslist[targetAddress],
+          toAddress: transferData.toAddress,
+          amount: transferData.amount,
+          gas: transferData.gas,
+          gasPrice: transferData.gasPrice,
+        });
+      }
+      toast.success("전송이 완료 되었습니다.");
+    } catch (error) {
+      toast.error("전송 중 문제가 발생하였습니다.");
     }
   }
 
@@ -177,7 +221,7 @@ function WalletHome() {
         )}
         <Modal
           isOpen={modalIsOpen}
-          onAfterOpen={getGasInfo}
+          onAfterOpen={getGasPriceInfo}
           style={{
             overlay: {
               position: "fixed",
@@ -233,8 +277,11 @@ function WalletHome() {
               type="text"
               name="address"
               value={transferData.toAddress}
-              onChange={(e) => {
-                setToAddress(e.target.value);
+              onChange={async (e) => {
+                if (e.target.value.length === 42) {
+                  await getGasinfo(e.target.value);
+                }
+                console.log(transferData.toAddress);
               }}
               placeholder="enter Address"
             />
@@ -256,7 +303,10 @@ function WalletHome() {
               name="value"
               value={transferData.amount}
               onChange={(e) => {
-                setToAddress(e.target.value);
+                setTransferData({
+                  ...transferData,
+                  amount: Number(e.target.value),
+                });
               }}
               placeholder="enter Amount"
             />
@@ -272,19 +322,18 @@ function WalletHome() {
             <div className="gas-price">
               <p className="title"> Gas</p>
               <Form.Control
+                disabled
                 className="form center"
                 type="text"
                 value={transferData.gas}
                 name="value"
-                onChange={(e) => {
-                  onChangeTransferForm(e, "gas");
-                }}
                 placeholder="enter your password"
               />
             </div>
             <div className="gas-price">
               <p className="title">Gas Price</p>
               <Form.Control
+                disabled
                 className="form center"
                 type="text"
                 name="value"
@@ -306,8 +355,9 @@ function WalletHome() {
               bottom: " 20px",
               left: "5%",
             }}
+            onClick={() => send(token)}
           >
-            보내기
+            전송
           </Button>
         </Modal>
       </WalletHomeWrapper>

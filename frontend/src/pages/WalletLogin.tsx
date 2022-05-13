@@ -5,7 +5,7 @@ import styled from "styled-components";
 import TopNav from "../components/TopNav";
 import PageWrapper , {} from "./page.styled";
 import { toast } from "react-toastify";
-import { setWalletLogin, sendTransaction } from "../common/api";
+import { setWalletLogin } from "../common/api";
 import ReactLoading from "react-loading";
 import { useFetch } from "../common/fetchHook";
 import theme from "../theme";
