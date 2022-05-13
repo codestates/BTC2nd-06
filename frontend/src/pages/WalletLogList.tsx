@@ -25,7 +25,8 @@ function WalletLogList() {
       const filtered = data.transactions!.map((e: any) => {
         const state = e.value >= 0 ? "Receive" : "Send";
         const target = e.value >= 0 ? e.sender_address : e.recipient_address;
-        const value = web3.utils.fromWei(String(Math.abs(e.value)), "ether");
+        const v = web3.utils.fromWei(String(Math.abs(e.value)), "ether");
+        const value = e.value >= 0 ? v : "- " + v;
         const trx_hash = e.trx_hash;
         return { state, target, value, trx_hash };
       });
