@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import styled from "styled-components";
 import TopNav from "../components/TopNav";
-import PageWrapper from "./page.styled";
+import PageWrapper , {} from "./page.styled";
 import { toast } from "react-toastify";
 import { setWalletLogin, sendTransaction } from "../common/api";
 import ReactLoading from "react-loading";

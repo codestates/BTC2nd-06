@@ -33,12 +33,8 @@ export async function getMasterWalletInfo() {
   return await api.deamon.get("wallet/master/");
 }
 
-export async function getSlaveWalletInfo({
-  addresse: target,
-}: {
-  addresse: string;
-}) {
-  return await api.deamon.get("wallet/derived", { target });
+export async function getSlaveWalletInfo({ address }: { address: string }) {
+  return await api.deamon.get("wallet/derived/", { address });
 }
 
 export async function getBalance({ address }: { address: string }) {

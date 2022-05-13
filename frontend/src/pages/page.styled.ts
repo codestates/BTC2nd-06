@@ -24,4 +24,21 @@ const PageWrapper = styled.div`
   }
 `;
 
+export const modalStyle = {
+  content: {
+    position: "absolute",
+    top: "40px",
+    left: "40px",
+    right: "40px",
+    bottom: "40px",
+    background: theme.colors.BackGround,
+    overflow: "auto",
+    WebkitOverflowScrolling: "touch",
+    borderRadius: "5px",
+    outline: "none",
+    padding: "20px",
+    color: theme.colors.White,
+  },
+};
+
 export default PageWrapper;

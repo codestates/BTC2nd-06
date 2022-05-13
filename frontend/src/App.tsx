@@ -7,6 +7,7 @@ import ExplorerDetail from "./pages/ExplorerDetail";
 import WalletLogin from "./pages/WalletLogin";
 import WalletSignup from "./pages/WalletSignup";
 import WalletHome from "./pages/WalletHome";
+import WalletLogList from "./pages/WalletLogList";
 import { BlockInfo, Transaction } from "./interfaces";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -74,6 +75,8 @@ function App() {
         <Route path="/wallet" element={<WalletLogin />} />
         <Route path="/wallet/signup" element={<WalletSignup />} />
         <Route path="/wallet/my" element={<WalletHome />} />
+        <Route path="/wallet/log" element={<WalletLogList />} />
+        <Route path="*" element={<WalletLogList />} />
       </Routes>
       <ToastContainer theme={"dark"} autoClose={3000} />;
     </HashRouter>
