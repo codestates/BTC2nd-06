@@ -3,9 +3,9 @@ import { useNavigate } from "react-router-dom";
 import { Form, Button } from "react-bootstrap";
 import styled from "styled-components";
 import TopNav from "../components/TopNav";
-import PageWrapper from "./page.styled";
+import PageWrapper , {} from "./page.styled";
 import { toast } from "react-toastify";
-import { setWalletLogin, getGasInfo, getBalance } from "../common/api";
+import { setWalletLogin } from "../common/api";
 import ReactLoading from "react-loading";
 import { useFetch } from "../common/fetchHook";
 import theme from "../theme";
@@ -23,12 +23,12 @@ function WalletLogin() {
     navigate(`/wallet/my`);
   }
 
-  useEffect(() => {}, []);
-  const notify = async () => {
-    console.log(await getBalance());
-    console.log(await getGasInfo());
-    //
-  };
+  // useEffect(() => {}, []);
+  // const notify = async () => {
+  //   console.log(await sendTransaction());
+  //   // console.log(await getGasInfo());
+  //   //
+  // };
 
   async function signup() {
     try {
@@ -54,12 +54,8 @@ function WalletLogin() {
       <TopNav />
       <WalletMainWrapper>
         <div className="title-box">
-          <div className="sub-title" onClick={login}>
-            Wallet
-          </div>
-          <div className="wallet-title" onClick={notify}>
-            Genesis
-          </div>
+          <div className="sub-title">Wallet</div>
+          <div className="wallet-title">Genesis</div>
         </div>
         <div>
           <Form.Group className="form-group">

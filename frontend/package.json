@@ -18,6 +18,7 @@
     "react-bootstrap": "^2.3.1",
     "react-dom": "^18.1.0",
     "react-loading": "^2.0.3",
+    "react-modal": "^3.15.1",
     "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
     "react-toastify": "^9.0.1",
@@ -53,6 +54,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-modal": "^3.13.1",
     "@types/styled-components": "^5.1.25",
     "@typescript-eslint/eslint-plugin": "^5.23.0",
     "@typescript-eslint/parser": "^5.23.0",

@@ -33,28 +33,85 @@ export async function getMasterWalletInfo() {
   return await api.deamon.get("wallet/master/");
 }
 
-export async function getSlaveWalletInfo({
-  addresse: target,
-}: {
-  addresse: string;
-}) {
-  return await api.deamon.get("wallet/derived/", { target });
+export async function getSlaveWalletInfo({ address }: { address: string }) {
+  return await api.deamon.get("wallet/derived/", { address });
 }
 
-export async function getBalance() {
-  // const m_id = localStorage.getItem("mnemonic_id")!.replace(/\"/gi, "");
-  return await api.wallet.get("/wallet/address/balance", {
-    mnemonicId: '5d0566e0-d204-11ec-97d6-516958c55216"',
-    address: "0x6A840381c14495201Dc0587a6e6584EfdAAB3D90",
+export async function getBalance({ address }: { address: string }) {
+  const mid = localStorage.getItem("mnemonic_id")!.replace(/\"/gi, "");
+  return await api.wallet.get("/api/wallet/address/balance", {
+    mnemonicId: mid,
+    address,
   });
 }
 
-export async function getGasInfo() {
-  const params = {
-    mnemonicId: "5d0566e0-d204-11ec-97d6-516958c55216",
-    fromAddr: "0x6A840381c14495201Dc0587a6e6584EfdAAB3D90",
-    toAddr: "0x6A840381c14495201Dc0587a6e6584EfdAAB3D90",
-    valueBNB: "00000000000001",
-  };
-  return await api.wallet.get("/api/transaction/gas", params);
+export async function sendCoin({
+  fromAddress,
+  toAddress,
+  amount,
+  gas,
+  gasPrice,
+}: any) {
+  const mid = localStorage.getItem("mnemonic_id")!.replace(/\"/gi, "");
+  return await api.wallet.post("/api/transaction", {
+    mnemonicId: mid,
+    fromAddr: fromAddress,
+    toAddr: toAddress,
+    valueBNB: Number(amount),
+    gasPrice: Number(gasPrice),
+    gas: gas,
+  });
+}
+export async function sendToken({
+  fromAddress,
+  toAddress,
+  amount,
+  gas,
+  gasPrice,
+}: any) {
+  const mid = localStorage.getItem("mnemonic_id")!.replace(/\"/gi, "");
+  return await api.wallet.post("/contract/transfer", {
+    mnemonicId: mid,
+    fromAddr: fromAddress,
+    toAddr: toAddress,
+    value: Number(amount),
+    gasPrice: Number(gasPrice),
+    gas: gas,
+  });
+}
+
+export async function getTTSBalance({ address }: { address: string }) {
+  const mid = localStorage.getItem("mnemonic_id")!.replace(/\"/gi, "");
+  console.log("!!!", {
+    mnemonicId: mid,
+    address,
+  });
+  return await api.wallet.post("/api/contract/balanceOf", {
+    mnemonicId: mid,
+    tokenAccount: address,
+  });
+}
+
+export async function getGas({
+  toAddr,
+  fromAddr,
+  valueBNB,
+}: {
+  toAddr: string;
+  fromAddr: string;
+  valueBNB: number;
+}) {
+  const mid = localStorage.getItem("mnemonic_id")!.replace(/\"/gi, "");
+  return await api.wallet.get("/api/transaction/gas", {
+    mnemonicId: mid,
+    toAddr,
+    fromAddr,
+    valueBNB,
+  });
+}
+export async function getGasPrice() {
+  const mid = localStorage.getItem("mnemonic_id")!.replace(/\"/gi, "");
+  return await api.wallet.get("/api/transaction/gasprice", {
+    mnemonicId: mid,
+  });
 }
