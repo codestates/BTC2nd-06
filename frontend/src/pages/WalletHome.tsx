@@ -274,10 +274,10 @@ function WalletHome() {
               name="address"
               value={transferData.toAddress}
               onChange={async (e) => {
+                setTransferData({ ...transferData, toAddress: e.target.value });
                 if (e.target.value.length === 42) {
                   await getGasinfo(e.target.value);
                 }
-                console.log(transferData.toAddress);
               }}
               placeholder="enter Address"
             />
@@ -295,7 +295,7 @@ function WalletHome() {
 
             <Form.Control
               className="form center"
-              type="number"
+              type="text"
               name="value"
               value={transferData.amount}
               onChange={(e) => {
@@ -310,7 +310,8 @@ function WalletHome() {
               className="mb-4 mt-4"
               style={{ color: "red", fontSize: "1rem", textAlign: "center" }}
             >
-              전송 가능 금액 {balance}
+              전송 가능 금액{" "}
+              {token === "BNB" ? balance + " BNB" : TTSbalance + " TTS"}
             </p>
           </Form.Group>
 
@@ -318,10 +319,15 @@ function WalletHome() {
             <div className="gas-price">
               <p className="title"> Gas</p>
               <Form.Control
-                disabled
                 className="form center"
                 type="text"
                 value={transferData.gas}
+                onChange={(e) => {
+                  setTransferData({
+                    ...transferData,
+                    gas: Number(e.target.value),
+                  });
+                }}
                 name="value"
                 placeholder="enter your password"
               />
@@ -329,9 +335,8 @@ function WalletHome() {
             <div className="gas-price">
               <p className="title">Gas Price</p>
               <Form.Control
-                disabled
                 className="form center"
-                type="text"
+                type="number"
                 name="value"
                 value={transferData.gasPrice}
                 onChange={(e) => {
