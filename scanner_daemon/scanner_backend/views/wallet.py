@@ -108,7 +108,8 @@ class DerivedWalletRetrieveView(APIView):
     """
 
     def get(self, request):
-        address = request.data['address']
+
+        address = request.GET['address']
         try:
             derived_wallet = DerivedWallet.objects.get(address=address)
         except DerivedWallet.DoesNotExist:
