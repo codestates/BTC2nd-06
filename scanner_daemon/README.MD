@@ -16,6 +16,7 @@
 - daemon.py:
   - 코인 데몬 스크립트
   - 실시간으로 생성되는 BSC 네트워크의 최신 블록을 스캔하여 블록에 포함된 트랜잭션의 목록 중 sender/recipient가 DB의 Wallet 주소와 일치하면 검증 후 DB에 트랜잭션 저장
+  - web3 API 통신 과정의 I/O 로드를 줄이기 위해 multiprocessing 이용
 
 
 ## 서버/코인 데몬 실행 커맨드
